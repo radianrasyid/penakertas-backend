@@ -97,7 +97,16 @@ app.get("/api/geolocation/ward/get-paginate", GETWardPaginate);
 
 // USER
 app.post("/api/user/check-role", POSTCheckRole);
-app.post("api/user/create", upload.fields([]), POSTCreateUser);
+app.post(
+  "/api/user/create",
+  upload.fields([
+    {
+      name: "photograph",
+      maxCount: 1,
+    },
+  ]),
+  POSTCreateUser
+);
 
 app.listen(PORT, HOST, () => {
   console.log(`server is running on http://${HOST}:${PORT}`);

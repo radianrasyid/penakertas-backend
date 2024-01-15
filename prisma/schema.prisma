@@ -48,7 +48,7 @@ model User {
   childs                  Child[]
   relationships           Relationship[]
   identity                String?
-  photograph              String?
+  photograph              Bytes?
   familyCertificate       String?
   npwp                    String?
   bpjsOfEmployment        String?

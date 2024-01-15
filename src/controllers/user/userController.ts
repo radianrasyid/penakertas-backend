@@ -259,6 +259,9 @@ export const POSTBulkInsert = async (req: Request, res: Response) => {
 };
 
 export const POSTCreateUser = async (req: Request, res: Response) => {
+  interface reqFiles {
+    [fieldname: string]: Express.Multer.File[];
+  }
   try {
     const {
       address,
@@ -331,6 +334,11 @@ export const POSTCreateUser = async (req: Request, res: Response) => {
       bpjsOfEmployment: string | null;
       bpjsOfHealth: string | null;
     } = req.body;
+    console.log("INI REQUEST", {
+      body: req.body,
+      file: req.file,
+      files: (req.files as reqFiles).photograph[0],
+    });
     const officerData = await prisma.user.create({
       data: {
         firstName: firstname,
@@ -342,7 +350,7 @@ export const POSTCreateUser = async (req: Request, res: Response) => {
         bpjsOfEmployment: bpjsOfEmployment,
         bpjsOfHealth: bpjsOfHealth,
         cityDistrict: district,
-        dateOfBirth: dateOfBirth,
+        dateOfBirth: new Date(dateOfBirth as string),
         decisionLetterNumber: decisionLetterNumber,
         email: email,
         employmentId: nrpt,
@@ -357,7 +365,7 @@ export const POSTCreateUser = async (req: Request, res: Response) => {
         neighborhoodHead: neighborhoodHead,
         phoneNumber: phoneNumber,
         Province: province,
-        startingYear: startYear,
+        startingYear: new Date(),
         placementLocation: placement,
         subdistrict: subdistrict,
         telephone: telephone,
@@ -369,6 +377,7 @@ export const POSTCreateUser = async (req: Request, res: Response) => {
         familyCertificateNumber: familyCertificateNumber,
         identityNumber: identityNumber,
         npwpNumber: npwpNumber,
+        photograph: (req.files as reqFiles).photograph[0].buffer,
       },
     });
 
@@ -378,6 +387,7 @@ export const POSTCreateUser = async (req: Request, res: Response) => {
       data: officerData,
     });
   } catch (error) {
+    console.log(error);
     return res.status(400).json({
       status: "failed",
       message: "something went wrong",
