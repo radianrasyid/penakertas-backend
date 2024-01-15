@@ -1,0 +1,356 @@
+// schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
+}
+
+enum userRole {
+  ADMIN
+  SUPER_ADMIN
+  USER
+}
+
+enum maritalStatus {
+  SINGLE
+  MARRIED
+  DIVORCED
+}
+
+enum userGender {
+  MALE
+  FEMALE
+}
+
+model User {
+  id                      String         @id @default(cuid())
+  email                   String?        @unique
+  username                String?        @unique
+  employmentId            String?        @unique
+  password                String
+  firstName               String?
+  lastName                String?
+  frontTitle              String?
+  backTitle               String?
+  workGroup               String?
+  workUnit                String?
+  workPart                String?
+  gender                  String?
+  role                    userRole
+  createdAt               DateTime       @default(now()) @map(name: "created_at")
+  updatedAt               DateTime       @updatedAt @map(name: "updated_at")
+  leaves                  UserLeave[]
+  childs                  Child[]
+  relationships           Relationship[]
+  identity                String?
+  photograph              String?
+  familyCertificate       String?
+  npwp                    String?
+  bpjsOfEmployment        String?
+  bpjsOfHealth            String?
+  decisionLetter          String?
+  latestEducationLevel    String?
+  maritalStatus           String?
+  religion                String?
+  identityNumber          String?
+  npwpNumber              String?
+  familyCertificateNumber String?
+  jobDescription          String?
+  placementLocation       String?
+  startingYear            DateTime?
+  decisionLetterNumber    String?
+  homeAddress             String?
+  neighborhood            String?
+  neighborhoodHead        String?
+  Province                String?
+  cityDistrict            String?
+  subdistrict             String?
+  ward                    String?
+  birthPlace              String?
+  dateOfBirth             DateTime?
+  phoneNumber             String?
+  telephone               String?
+
+  @@map(name: "users")
+}
+
+model Gender {
+  id        String     @id @default(cuid())
+  name      userGender @unique
+  value     userGender
+  createdAt DateTime   @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime   @updatedAt @db.Timestamptz(6)
+}
+
+model WorkGroup {
+  id        String     @id @default(cuid())
+  name      String     @unique
+  value     String
+  workUnits WorkUnit[]
+  createdAt DateTime   @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime   @updatedAt @db.Timestamptz(6)
+}
+
+model WorkUnit {
+  id            String     @id @unique @default(cuid())
+  name          String
+  value         String
+  workGroupName String
+  workGroup     WorkGroup  @relation(fields: [workGroupName], references: [name])
+  workParts     WorkPart[]
+  createdAt     DateTime   @default(now()) @db.Timestamptz(6)
+  updatedAt     DateTime   @updatedAt @db.Timestamptz(6)
+}
+
+model WorkPart {
+  id           String   @id @default(cuid())
+  name         String
+  value        String
+  workUnitName String
+  workUnit     WorkUnit @relation(fields: [workUnitName], references: [id])
+  createdAt    DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt    DateTime @updatedAt @db.Timestamptz(6)
+}
+
+model Religion {
+  id        String   @id @default(cuid())
+  name      String
+  value     String
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+}
+
+model Province {
+  id              String         @id @default(cuid())
+  name            String         @unique
+  value           String
+  CitiesDistricts CityDistrict[]
+  createdAt       DateTime       @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime       @updatedAt @db.Timestamptz(6)
+}
+
+model CityDistrict {
+  id           String        @id @default(cuid())
+  name         String
+  value        String
+  provinceId   String
+  province     Province      @relation(fields: [provinceId], references: [id])
+  subdistricts Subdistrict[]
+  createdAt    DateTime      @default(now()) @db.Timestamptz(6)
+  updatedAt    DateTime      @updatedAt @db.Timestamptz(6)
+}
+
+model Subdistrict {
+  id             String       @id @default(cuid())
+  name           String
+  value          String
+  cityDistrictId String
+  cityDistricts  CityDistrict @relation(fields: [cityDistrictId], references: [id])
+  wards          Ward[]
+  createdAt      DateTime     @default(now()) @db.Timestamptz(6)
+  updatedAt      DateTime     @updatedAt @db.Timestamptz(6)
+}
+
+model Ward {
+  id            String      @id @default(cuid())
+  name          String
+  value         String
+  subdistrictId String
+  subdistrict   Subdistrict @relation(fields: [subdistrictId], references: [id])
+  createdAt     DateTime    @default(now()) @db.Timestamptz(6)
+  updatedAt     DateTime    @updatedAt @db.Timestamptz(6)
+}
+
+model LeaveType {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  leave       Leave    @relation(fields: [leaveId], references: [id])
+  leaveId     String
+  createdAt   DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(6)
+}
+
+model LeaveFile {
+  id        String   @id @default(cuid())
+  name      String
+  value     String
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+}
+
+model Leave {
+  id        String      @id @default(cuid())
+  skNumber  String
+  skDate    DateTime
+  startDate DateTime
+  endDate   DateTime
+  leaveType LeaveType[]
+  users     UserLeave[]
+  createdAt DateTime    @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime    @updatedAt @db.Timestamptz(6)
+}
+
+model UserLeave {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  leave     Leave    @relation(fields: [leaveId], references: [id])
+  userId    String
+  leaveId   String
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+
+  @@unique([userId, leaveId])
+}
+
+model ChildActivity {
+  id        String   @id @default(cuid())
+  name      String
+  value     String
+  child     Child    @relation(fields: [childId], references: [id])
+  childId   String   @unique
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+}
+
+model Child {
+  id         String         @id @default(cuid())
+  name       String
+  childOrder Int
+  activity   ChildActivity?
+  status     String
+  parent     User           @relation(fields: [parentId], references: [id])
+  parentId   String
+  files      ChildFile[]
+  createdAt  DateTime       @default(now()) @db.Timestamptz(6)
+  updatedAt  DateTime       @updatedAt @db.Timestamptz(6)
+}
+
+model ChildStatus {
+  id        String   @id @default(cuid())
+  name      String
+  value     String
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+}
+
+model ChildFile {
+  id        String   @id @default(cuid())
+  name      String
+  value     String
+  child     Child    @relation(fields: [childId], references: [id])
+  childId   String
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+}
+
+model Relationship {
+  id                  String        @id @default(cuid())
+  firstName           String
+  lastName            String
+  status              maritalStatus
+  phoneNumber         String
+  photograph          String
+  identityCard        String
+  bpjsOfEmployment    String
+  bpjsOfHealth        String
+  marriageCertificate String
+  relation            User          @relation(fields: [personRelatedId], references: [id])
+  personRelatedId     String
+  createdAt           DateTime      @default(now()) @db.Timestamptz(6)
+  updatedAt           DateTime      @updatedAt @db.Timestamptz(6)
+}
+
+model EducationFile {
+  id          String    @id @default(cuid())
+  name        String
+  value       String
+  education   Education @relation(fields: [educationId], references: [id])
+  educationId String
+  createdAt   DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime  @updatedAt @db.Timestamptz(6)
+}
+
+model Education {
+  id             String          @id @default(cuid())
+  educationPlace String
+  educationLevel String
+  address        String
+  major          String
+  graduationYear DateTime
+  files          EducationFile[]
+  createdAt      DateTime        @default(now()) @db.Timestamptz(6)
+  updatedAt      DateTime        @updatedAt @db.Timestamptz(6)
+}
+
+model Parent {
+  id         String   @id @default(cuid())
+  firstName  String
+  lastName   String
+  status     String
+  profession String
+  createdAt  DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt  DateTime @updatedAt @db.Timestamptz(6)
+}
+
+model Profession {
+  id        String   @id @default(cuid())
+  name      String
+  value     String
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+}
+
+model EducationLevel {
+  id             String   @id @default(cuid())
+  name           String
+  additionalName String?
+  value          String
+  createdAt      DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt      DateTime @updatedAt @db.Timestamptz(6)
+}
+
+model SourceOfSalary {
+  id        String   @id @default(cuid())
+  name      String
+  value     String
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+}
+
+model ParentStatus {
+  id        String   @id @default(cuid())
+  name      String
+  value     String
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+}
+
+model MaritalStatus {
+  id        String   @id @default(cuid())
+  name      String
+  value     String
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+}
+
+model PartnerStatus {
+  id        String   @id @default(cuid())
+  name      String
+  value     String
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+}
+
+model ChildSupport {
+  id        String   @id @default(cuid())
+  name      String
+  value     String
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @db.Timestamptz(6)
+}
