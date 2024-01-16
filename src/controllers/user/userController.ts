@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
 import jsonwebtoken from "jsonwebtoken";
+import exampleModel from "../../../prisma/mongooseModel";
 import prisma from "../../../prisma/prisma";
 
 export const POSTUserLogin = async (req: Request, res: Response) => {
@@ -339,6 +340,16 @@ export const POSTCreateUser = async (req: Request, res: Response) => {
       file: req.file,
       files: (req.files as reqFiles).photograph[0],
     });
+
+    const newExample = new exampleModel({
+      data: {
+        id: new Date().getTime(),
+        file: (req.files as reqFiles).photograph[0].buffer,
+      },
+    });
+
+    const resMongo = await newExample.save();
+
     const officerData = await prisma.user.create({
       data: {
         firstName: firstname,
@@ -385,6 +396,7 @@ export const POSTCreateUser = async (req: Request, res: Response) => {
       status: "success",
       message: "successfully created new user",
       data: officerData,
+      resMongo,
     });
   } catch (error) {
     console.log(error);

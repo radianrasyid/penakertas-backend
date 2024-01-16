@@ -1,6 +1,7 @@
 import bodyParser from "body-parser";
 import cors from "cors";
 import express, { Request, Response } from "express";
+import "../prisma/mongo";
 import {
   DELETEDistrict,
   GETAllDistrict,
