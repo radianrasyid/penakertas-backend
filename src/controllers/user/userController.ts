@@ -3,6 +3,7 @@ import { Request, Response } from "express";
 import jsonwebtoken from "jsonwebtoken";
 import exampleModel from "../../../prisma/mongooseModel";
 import prisma from "../../../prisma/prisma";
+import { createChecksum } from "../../lib/processors";
 
 export const POSTUserLogin = async (req: Request, res: Response) => {
   try {
@@ -335,20 +336,34 @@ export const POSTCreateUser = async (req: Request, res: Response) => {
       bpjsOfEmployment: string | null;
       bpjsOfHealth: string | null;
     } = req.body;
-    console.log("INI REQUEST", {
-      body: req.body,
-      file: req.file,
-      files: (req.files as reqFiles).photograph[0],
-    });
 
-    const newExample = new exampleModel({
-      data: {
-        id: new Date().getTime(),
-        file: (req.files as reqFiles).photograph[0].buffer,
-      },
-    });
+    const {
+      photograph,
+      
+    } = req.files as reqFiles;
 
-    const resMongo = await newExample.save();
+    switch (true) {
+      case !!(req.files as reqFiles).photograph:
+        const photograph = (req.files as reqFiles).photograph[0];
+        const combinedPhotographChecksum = `${photograph.fieldname}${
+          photograph.originalname
+        }${photograph.size}${photograph.buffer.toString()}`;
+        const checksumPhotograph = createChecksum(combinedPhotographChecksum);
+
+        const newExample = new exampleModel({
+          data: {
+            id: new Date().getTime(),
+            file: {
+              ...(req.files as reqFiles).photograph[0],
+              checksum: checksumPhotograph,
+            },
+          },
+        });
+
+        const resMongo = await newExample.save();
+        break;
+      case 
+    }
 
     const officerData = await prisma.user.create({
       data: {
@@ -396,7 +411,6 @@ export const POSTCreateUser = async (req: Request, res: Response) => {
       status: "success",
       message: "successfully created new user",
       data: officerData,
-      resMongo,
     });
   } catch (error) {
     console.log(error);

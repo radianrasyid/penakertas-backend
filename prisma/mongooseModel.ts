@@ -12,10 +12,21 @@ interface ExampleDocument extends Document {
 const exampleSchema = new Schema<ExampleDocument>({
   data: {
     id: { type: String, required: true },
-    file: { type: Buffer, required: true },
+    file: {
+      type: {
+        fieldname: String,
+        originalname: String,
+        mimetype: String,
+        encoding: String,
+        size: Number,
+        buffer: Buffer,
+        checksum: String,
+      },
+      required: true,
+    },
   },
 });
 
-const exampleModel = mongoose.model<ExampleDocument>("Example", exampleSchema);
+const exampleModel = mongoose.model<ExampleDocument>("File", exampleSchema);
 
 export default exampleModel;
