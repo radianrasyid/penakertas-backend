@@ -48,8 +48,10 @@ model User {
   childs                  Child[]
   relationships           Relationship[]
   identity                String?
-  photograph              Bytes?
+  photograph              String?
   familyCertificate       String?
+  bpjsOfEmploymentFile    String?
+  bpjsOfHealthFile        String?
   npwp                    String?
   bpjsOfEmployment        String?
   bpjsOfHealth            String?
@@ -100,21 +102,21 @@ model WorkUnit {
   id            String     @id @unique @default(cuid())
   name          String
   value         String
-  workGroupName String
-  workGroup     WorkGroup  @relation(fields: [workGroupName], references: [name])
+  workGroupName String?
+  workGroup     WorkGroup? @relation(fields: [workGroupName], references: [name])
   workParts     WorkPart[]
   createdAt     DateTime   @default(now()) @db.Timestamptz(6)
   updatedAt     DateTime   @updatedAt @db.Timestamptz(6)
 }
 
 model WorkPart {
-  id           String   @id @default(cuid())
+  id           String    @id @default(cuid())
   name         String
   value        String
-  workUnitName String
-  workUnit     WorkUnit @relation(fields: [workUnitName], references: [id])
-  createdAt    DateTime @default(now()) @db.Timestamptz(6)
-  updatedAt    DateTime @updatedAt @db.Timestamptz(6)
+  workUnitName String?
+  workUnit     WorkUnit? @relation(fields: [workUnitName], references: [id])
+  createdAt    DateTime  @default(now()) @db.Timestamptz(6)
+  updatedAt    DateTime  @updatedAt @db.Timestamptz(6)
 }
 
 model Religion {

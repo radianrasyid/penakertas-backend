@@ -4,6 +4,7 @@ import jsonwebtoken from "jsonwebtoken";
 import exampleModel from "../../../prisma/mongooseModel";
 import prisma from "../../../prisma/prisma";
 import { createChecksum } from "../../lib/processors";
+import { reqFiles } from "../../lib/types/general";
 
 export const POSTUserLogin = async (req: Request, res: Response) => {
   try {
@@ -114,6 +115,14 @@ export const POSTBulkInsert = async (req: Request, res: Response) => {
           username: "azraramadhani",
           role: "USER",
         },
+        {
+          firstName: "Ramonzha",
+          lastName: "",
+          password: await bcrypt.hash("12345678", 10),
+          email: "ramonzha@gmail.com",
+          username: "ramonzha",
+          role: "SUPER_ADMIN",
+        },
       ],
     });
 
@@ -133,8 +142,28 @@ export const POSTBulkInsert = async (req: Request, res: Response) => {
     await prisma.religion.createMany({
       data: [
         {
-          name: "ISLAM",
+          name: "Islam",
           value: "ISLAM",
+        },
+        {
+          name: "Kristen",
+          value: "KRISTEN",
+        },
+        {
+          name: "Katolik",
+          value: "KATOLIK",
+        },
+        {
+          name: "Hindu",
+          value: "HINDU",
+        },
+        {
+          name: "Buddha",
+          value: "BUDDHA",
+        },
+        {
+          name: "Khonghucu",
+          value: "KHONGHUCU",
         },
       ],
     });
@@ -196,6 +225,53 @@ export const POSTBulkInsert = async (req: Request, res: Response) => {
           value: "THL",
         },
       ],
+    });
+
+    await prisma.workUnit.createMany({
+      data: [
+        "Biro Pemerintahan dan Otonomi Daerah",
+        "Biro Kesejahteraan Rakyat",
+        "Biro Hukum",
+        "Biro Perekonomian dan Pembangunan",
+        "Biro Pengadaan Barang dan Jasa",
+        "Biro Organisasi",
+        "Biro Umum",
+        "Biro Administrasi Pimpinan",
+      ].map((i) => {
+        return {
+          name: i,
+          value: i.toUpperCase(),
+        };
+      }),
+    });
+
+    await prisma.workPart.createMany({
+      data: [
+        "Bagian Kerjasama",
+        "Sub Bagian Tata Usaha",
+        "Bagian Peraturan Perundang-Undangan Provinsi",
+        "Bagian Peraturan Perundang-Undangan Kabupaten/Kota",
+        "Bagian Bantuan Hukum",
+        "Bagian Pengelolaan Pengadaan Barang dan Jasa",
+        "Bagian Pengelolaan Layanan Pengadaan Secara Elektronik",
+        "Bagian Pembinaan dan Advokasi Pengadaan Barang dan Jasa",
+        "Bagian Kelembagaan dan Analisis Jabatan",
+        "Bagian Reformasi Birokrasi dan Akuntabilitas Kinerja",
+        "Bagian Tatalaksana",
+        "Bagian Rumah Tangga",
+        "Bagian Administrasi Keuangan dan Aset",
+        "Bagian Tata Usaha",
+        "Sub Bagian Tata Usaha Pimpinan dan Staf Ahli",
+        "Bagian Perencanaan dan Kepegawaian Setda",
+        "Bagian Materi dan Komunikasi Pimpinan",
+        "Bagian Protokol",
+        "Sub Bagian Pembinaan Kelembagaan Pengadaan Badang dan Jasa",
+      ].map((e) => {
+        return {
+          name: e,
+          value: e.toUpperCase(),
+        };
+      }),
     });
 
     await prisma.province.createMany({
@@ -261,9 +337,6 @@ export const POSTBulkInsert = async (req: Request, res: Response) => {
 };
 
 export const POSTCreateUser = async (req: Request, res: Response) => {
-  interface reqFiles {
-    [fieldname: string]: Express.Multer.File[];
-  }
   try {
     const {
       address,
@@ -338,31 +411,189 @@ export const POSTCreateUser = async (req: Request, res: Response) => {
     } = req.body;
 
     const {
-      photograph,
-      
+      photographFile,
+      familyCertificateFile,
+      bpjsOfEmploymentFile,
+      decisionLetterFile,
+      identityFile,
+      npwpFile,
+      bpjsOfHealthFile,
     } = req.files as reqFiles;
+    let filesResponse = {
+      resMongoPhotograph: null,
+      resMongoFamCert: null,
+      resMongoBpjsEmploy: null,
+      resMongoDecLetter: null,
+      resMongoIdFile: null,
+      resMongoNpFile: null,
+      resMongoBpjsHealth: null,
+    } as {
+      resMongoPhotograph: null | any;
+      resMongoFamCert: null | any;
+      resMongoBpjsEmploy: null | any;
+      resMongoDecLetter: null | any;
+      resMongoIdFile: null | any;
+      resMongoNpFile: null | any;
+      resMongoBpjsHealth: null | any;
+    };
+
+    console.log("testing file", req.files);
 
     switch (true) {
-      case !!(req.files as reqFiles).photograph:
-        const photograph = (req.files as reqFiles).photograph[0];
+      case !!photographFile:
+        const photograph = photographFile[0];
         const combinedPhotographChecksum = `${photograph.fieldname}${
           photograph.originalname
         }${photograph.size}${photograph.buffer.toString()}`;
         const checksumPhotograph = createChecksum(combinedPhotographChecksum);
 
-        const newExample = new exampleModel({
+        const photographToSave = new exampleModel({
           data: {
             id: new Date().getTime(),
             file: {
-              ...(req.files as reqFiles).photograph[0],
+              ...photograph,
               checksum: checksumPhotograph,
             },
           },
         });
 
-        const resMongo = await newExample.save();
-        break;
-      case 
+        const resMongoPhotograph = await photographToSave.save();
+        filesResponse = {
+          ...filesResponse,
+          resMongoPhotograph: resMongoPhotograph,
+        };
+      case !!familyCertificateFile:
+        const famCert = familyCertificateFile[0];
+        const combinedFamCertCheckum = `${famCert.fieldname}${
+          famCert.originalname
+        }${famCert.size}${famCert.buffer.toString()}`;
+        const checksumFamCert = createChecksum(combinedFamCertCheckum);
+
+        const famCertToSave = new exampleModel({
+          data: {
+            id: new Date().getTime(),
+            file: {
+              ...famCert,
+              checksum: checksumFamCert,
+            },
+          },
+        });
+
+        const resMongoFamCert = await famCertToSave.save();
+        filesResponse = {
+          ...filesResponse,
+          resMongoFamCert: resMongoFamCert,
+        };
+      case !!bpjsOfEmploymentFile:
+        const bpjsEmploy = bpjsOfEmploymentFile[0];
+        const combinedbpjsEmployCheckum = `${bpjsEmploy.fieldname}${
+          bpjsEmploy.originalname
+        }${bpjsEmploy.size}${bpjsEmploy.buffer.toString()}`;
+        const checksumBpjsEmploy = createChecksum(combinedbpjsEmployCheckum);
+
+        const bpjsEmployToSave = new exampleModel({
+          data: {
+            id: new Date().getTime(),
+            file: {
+              ...bpjsEmploy,
+              checksum: checksumBpjsEmploy,
+            },
+          },
+        });
+
+        const resMongoBpjsEmploy = await bpjsEmployToSave.save();
+        filesResponse = {
+          ...filesResponse,
+          resMongoBpjsEmploy: resMongoBpjsEmploy,
+        };
+      case !!decisionLetterFile:
+        const decLetter = decisionLetterFile[0];
+        const combinedDecLetterCheckum = `${decLetter.fieldname}${
+          decLetter.originalname
+        }${decLetter.size}${decLetter.buffer.toString()}`;
+        const checksumDecLetter = createChecksum(combinedDecLetterCheckum);
+
+        const decLetterToSave = new exampleModel({
+          data: {
+            id: new Date().getTime(),
+            file: {
+              ...decLetter,
+              checksum: checksumDecLetter,
+            },
+          },
+        });
+
+        const resMongoDecLetter = await decLetterToSave.save();
+        filesResponse = {
+          ...filesResponse,
+          resMongoDecLetter: resMongoDecLetter,
+        };
+      case !!identityFile:
+        const idFile = identityFile[0];
+        const combinedIdFileCheckum = `${idFile.fieldname}${
+          idFile.originalname
+        }${idFile.size}${idFile.buffer.toString()}`;
+        const checksumIdFile = createChecksum(combinedIdFileCheckum);
+
+        const idFileToSave = new exampleModel({
+          data: {
+            id: new Date().getTime(),
+            file: {
+              ...idFile,
+              checksum: checksumIdFile,
+            },
+          },
+        });
+
+        const resMongoIdFile = await idFileToSave.save();
+        filesResponse = {
+          ...filesResponse,
+          resMongoIdFile: resMongoIdFile,
+        };
+      case !!npwpFile:
+        const npFile = npwpFile[0];
+        const combinedNpFileCheckum = `${npFile.fieldname}${
+          npFile.originalname
+        }${npFile.size}${npFile.buffer.toString()}`;
+        const checksumNpFile = createChecksum(combinedNpFileCheckum);
+
+        const npFileToSave = new exampleModel({
+          data: {
+            id: new Date().getTime(),
+            file: {
+              ...npFile,
+              checksum: checksumNpFile,
+            },
+          },
+        });
+
+        const resMongoNpFile = await npFileToSave.save();
+        filesResponse = {
+          ...filesResponse,
+          resMongoNpFile: resMongoNpFile,
+        };
+      case !!bpjsOfHealthFile:
+        const bpjsHealth = bpjsOfHealthFile[0];
+        const combinedbpjsHealthCheckum = `${bpjsHealth.fieldname}${
+          bpjsHealth.originalname
+        }${bpjsHealth.size}${bpjsHealth.buffer.toString()}`;
+        const checksumBpjsHealth = createChecksum(combinedbpjsHealthCheckum);
+
+        const bpjsHealthToSave = new exampleModel({
+          data: {
+            id: new Date().getTime(),
+            file: {
+              ...bpjsHealth,
+              checksum: checksumBpjsHealth,
+            },
+          },
+        });
+
+        const resMongoBpjsHealth = await bpjsHealthToSave.save();
+        filesResponse = {
+          ...filesResponse,
+          resMongoBpjsHealth: resMongoBpjsHealth,
+        };
     }
 
     const officerData = await prisma.user.create({
@@ -403,7 +634,13 @@ export const POSTCreateUser = async (req: Request, res: Response) => {
         familyCertificateNumber: familyCertificateNumber,
         identityNumber: identityNumber,
         npwpNumber: npwpNumber,
-        photograph: (req.files as reqFiles).photograph[0].buffer,
+        photograph: filesResponse.resMongoPhotograph?._id || null,
+        npwp: filesResponse.resMongoNpFile?._id || null,
+        identity: filesResponse.resMongoIdFile?._id || null,
+        decisionLetter: filesResponse.resMongoDecLetter?._id || null,
+        familyCertificate: filesResponse.resMongoFamCert?._id || null,
+        bpjsOfEmploymentFile: filesResponse.resMongoBpjsEmploy?._id || null,
+        bpjsOfHealthFile: filesResponse.resMongoBpjsHealth?._id || null,
       },
     });
 

@@ -36,11 +36,23 @@ import {
 } from "./controllers/geolocation/ward/wardController";
 import { GETEmployeeStatistic } from "./controllers/statistic/statisticController";
 import {
+  GETListGender,
+  GETListLatestEducation,
+  GETListMaritalStatus,
+  GETListReligion,
+} from "./controllers/user/identityController";
+import {
   POSTBulkInsert,
   POSTCheckRole,
   POSTCreateUser,
   POSTUserLogin,
 } from "./controllers/user/userController";
+import { GETAllUserPaginated } from "./controllers/user/userFileUploadController";
+import {
+  GETListWorkGroup,
+  GETListWorkPart,
+  GETListWorkUnit,
+} from "./controllers/work/workController";
 import { upload } from "./lib/processors";
 
 const app = express();
@@ -102,12 +114,48 @@ app.post(
   "/api/user/create",
   upload.fields([
     {
-      name: "photograph",
+      name: "photographFile",
+      maxCount: 1,
+    },
+    {
+      name: "familyCertificateFile",
+      maxCount: 1,
+    },
+    {
+      name: "bpjsOfEmploymentFile",
+      maxCount: 1,
+    },
+    {
+      name: "decisionLetterFile",
+      maxCount: 1,
+    },
+    {
+      name: "identityFile",
+      maxCount: 1,
+    },
+    {
+      name: "npwpFile",
+      maxCount: 1,
+    },
+    {
+      name: "bpjsOfHealthFile",
       maxCount: 1,
     },
   ]),
   POSTCreateUser
 );
+app.get("/api/user/employee", GETAllUserPaginated);
+
+// WORK
+app.get("/api/work/group", GETListWorkGroup);
+app.get("/api/work/unit", GETListWorkUnit);
+app.get("/api/work/part", GETListWorkPart);
+
+// IDENTITY
+app.get("/api/identity/religion", GETListReligion);
+app.get("/api/identity/gender", GETListGender);
+app.get("/api/identity/education-level", GETListLatestEducation);
+app.get("/api/identity/marital-status", GETListMaritalStatus);
 
 app.listen(PORT, HOST, () => {
   console.log(`server is running on http://${HOST}:${PORT}`);
