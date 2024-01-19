@@ -35,10 +35,10 @@ export const POSTUserLogin = async (req: Request, res: Response) => {
         fullname: `${user?.firstName} ${user?.lastName}`,
         id: user?.id,
         email: user?.email,
-        image: user?.photograph,
+        image: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${user?.photograph}`,
         role: user?.role,
       },
-      "radianrasyid"
+      process.env.JWT_SECRET_KEY as string
     );
 
     return res.status(200).json({
@@ -657,4 +657,9 @@ export const POSTCreateUser = async (req: Request, res: Response) => {
       data: error,
     });
   }
+};
+
+export const POSTWhoAmI = async (req: Request, res: Response) => {
+  try {
+  } catch (error) {}
 };

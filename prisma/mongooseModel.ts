@@ -2,10 +2,18 @@ import mongoose, { Document, Schema } from "mongoose";
 
 interface FileData {
   id: string;
-  file: Buffer;
+  file: {
+    fieldname: String;
+    originalname: String;
+    mimetype: String;
+    encoding: String;
+    size: Number;
+    buffer: Buffer;
+    checksum: String;
+  };
 }
 
-interface ExampleDocument extends Document {
+export interface ExampleDocument extends Document {
   data: FileData;
 }
 

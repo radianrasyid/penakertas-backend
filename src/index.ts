@@ -2,6 +2,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import express, { Request, Response } from "express";
 import "../prisma/mongo";
+import { GETFileById } from "./controllers/file/fileController";
 import {
   DELETEDistrict,
   GETAllDistrict,
@@ -156,6 +157,9 @@ app.get("/api/identity/religion", GETListReligion);
 app.get("/api/identity/gender", GETListGender);
 app.get("/api/identity/education-level", GETListLatestEducation);
 app.get("/api/identity/marital-status", GETListMaritalStatus);
+
+// FILE
+app.get("/api/file/:fileId", GETFileById);
 
 app.listen(PORT, HOST, () => {
   console.log(`server is running on http://${HOST}:${PORT}`);

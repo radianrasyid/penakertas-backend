@@ -15,3 +15,20 @@ export const createChecksum = (data: any) => {
 
   return hash.digest("hex");
 };
+
+export const validateFromArrToString = ({
+  env,
+  stringToValidate,
+}: {
+  env: string;
+  stringToValidate: string;
+}) => {
+  let envData: string[] = [];
+  if (env.includes(",")) {
+    envData = env.split(",");
+  } else {
+    envData = [env];
+  }
+
+  return envData.some((e) => e === stringToValidate);
+};
