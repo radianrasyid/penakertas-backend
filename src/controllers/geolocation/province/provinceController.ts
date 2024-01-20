@@ -115,8 +115,6 @@ export const GETProvinceById = async (req: Request, res: Response) => {
       },
     });
 
-    console.log("get province by id", result);
-
     return res.status(200).json({
       status: "success",
       message: "success retreive data",
@@ -134,11 +132,6 @@ export const GETProvinceById = async (req: Request, res: Response) => {
 export const GETProvincePaginate = async (req: Request, res: Response) => {
   try {
     const { pageSize, pageNumber, searchQuery } = req.query;
-    console.log("TESTING PAGINATE BRO", {
-      pageSize,
-      pageNumber,
-      searchQuery,
-    });
 
     const datas = await prisma.province.findMany({
       where: {

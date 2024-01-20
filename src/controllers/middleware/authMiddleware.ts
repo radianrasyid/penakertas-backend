@@ -26,7 +26,7 @@ export const AuthMiddleware = async (
       incomingToken,
       process.env.JWT_SECRET_KEY as string
     );
-    req.user = decoded;
+    (req as any).user = decoded;
     next();
   } catch (error) {
     console.error(error);

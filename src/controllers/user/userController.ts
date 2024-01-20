@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
 import jsonwebtoken from "jsonwebtoken";
-import exampleModel from "../../../prisma/mongooseModel";
+import exampleModel, { ExampleDocument } from "../../../prisma/mongooseModel";
 import prisma from "../../../prisma/prisma";
 import { createChecksum } from "../../lib/processors";
 import { reqFiles } from "../../lib/types/general";
@@ -9,10 +9,6 @@ import { reqFiles } from "../../lib/types/general";
 export const POSTUserLogin = async (req: Request, res: Response) => {
   try {
     const { username, password } = req.body;
-    console.log("TEST BRO", {
-      username,
-      password,
-    });
 
     const user = await prisma.user.findUnique({
       where: {
@@ -35,7 +31,9 @@ export const POSTUserLogin = async (req: Request, res: Response) => {
         fullname: `${user?.firstName} ${user?.lastName}`,
         id: user?.id,
         email: user?.email,
-        image: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${user?.photograph}`,
+        image: !!user?.photograph
+          ? `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${user?.photograph}`
+          : null,
         role: user?.role,
       },
       process.env.JWT_SECRET_KEY as string
@@ -58,14 +56,11 @@ export const POSTUserLogin = async (req: Request, res: Response) => {
 export const POSTCheckRole = async (req: Request, res: Response) => {
   try {
     const { email } = req.body;
-    console.log("ini email bro", email);
     const user = await prisma.user.findUnique({
       where: {
         email: email,
       },
     });
-
-    console.log("ini setelah check db", user);
 
     if (!!user?.role) {
       return res.status(200).json({
@@ -437,8 +432,6 @@ export const POSTCreateUser = async (req: Request, res: Response) => {
       resMongoBpjsHealth: null | any;
     };
 
-    console.log("testing file", req.files);
-
     switch (true) {
       case !!photographFile:
         const photograph = photographFile[0];
@@ -659,7 +652,354 @@ export const POSTCreateUser = async (req: Request, res: Response) => {
   }
 };
 
-export const POSTWhoAmI = async (req: Request, res: Response) => {
+export const GETWhoAmI = async (req: Request, res: Response) => {
   try {
-  } catch (error) {}
+    const data = (req as any).user;
+    console.log("ini data masuk ke whoami", data);
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: data.id,
+      },
+      select: {
+        id: true,
+        email: true,
+        username: true,
+        employmentId: true,
+        firstName: true,
+        lastName: true,
+        frontTitle: true,
+        backTitle: true,
+        workGroup: true,
+        workUnit: true,
+        workPart: true,
+        gender: true,
+        createdAt: true,
+        updatedAt: true,
+        leaves: true,
+        childs: true,
+        relationships: true,
+        identity: true,
+        photograph: true,
+        familyCertificate: true,
+        bpjsOfEmploymentFile: true,
+        bpjsOfHealthFile: true,
+        npwp: true,
+        latestEducationLevel: true,
+        maritalStatus: true,
+        religion: true,
+        identityNumber: true,
+        npwpNumber: true,
+        familyCertificateNumber: true,
+        jobDescription: true,
+        placementLocation: true,
+        startingYear: true,
+        decisionLetterNumber: true,
+        homeAddress: true,
+        neighborhood: true,
+        neighborhoodHead: true,
+        Province: true,
+        cityDistrict: true,
+        subdistrict: true,
+        ward: true,
+        birthPlace: true,
+        dateOfBirth: true,
+        phoneNumber: true,
+        telephone: true,
+        decisionLetter: true,
+        bpjsOfEmployment: true,
+        bpjsOfHealth: true,
+      },
+    });
+
+    const result = {
+      ...user,
+      identity: !!user?.identity
+        ? {
+            mimetype: (
+              (await exampleModel.findById(user.identity)) as ExampleDocument
+            ).data.file.mimetype,
+            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
+              ((await exampleModel.findById(user.identity)) as ExampleDocument)
+                ._id
+            }`,
+          }
+        : null,
+      photograph: !!user?.photograph
+        ? {
+            mimetype: (
+              (await exampleModel.findById(user.photograph)) as ExampleDocument
+            ).data.file.mimetype,
+            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
+              (
+                (await exampleModel.findById(
+                  user.photograph
+                )) as ExampleDocument
+              )._id
+            }`,
+          }
+        : null,
+      familyCertificate: !!user?.familyCertificate
+        ? {
+            mimetype: (
+              (await exampleModel.findById(
+                user.familyCertificate
+              )) as ExampleDocument
+            ).data.file.mimetype,
+            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
+              (
+                (await exampleModel.findById(
+                  user.familyCertificate
+                )) as ExampleDocument
+              )._id
+            }`,
+          }
+        : null,
+      bpjsOfEmploymentFile: !!user?.bpjsOfEmploymentFile
+        ? {
+            mimetype: (
+              (await exampleModel.findById(
+                user.bpjsOfEmploymentFile
+              )) as ExampleDocument
+            ).data.file.mimetype,
+            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
+              (
+                (await exampleModel.findById(
+                  user.bpjsOfEmploymentFile
+                )) as ExampleDocument
+              )._id
+            }`,
+          }
+        : null,
+      bpjsOfHealthFile: !!user?.bpjsOfHealthFile
+        ? {
+            mimetype: (
+              (await exampleModel.findById(
+                user.bpjsOfHealthFile
+              )) as ExampleDocument
+            ).data.file.mimetype,
+            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
+              (
+                (await exampleModel.findById(
+                  user.bpjsOfHealthFile
+                )) as ExampleDocument
+              )._id
+            }`,
+          }
+        : null,
+      npwp: !!user?.npwp
+        ? {
+            mimetype: (
+              (await exampleModel.findById(user.npwp)) as ExampleDocument
+            ).data.file.mimetype,
+            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
+              ((await exampleModel.findById(user.npwp)) as ExampleDocument)._id
+            }`,
+          }
+        : null,
+      decisionLetter: !!user?.decisionLetter
+        ? {
+            mimetype: (
+              (await exampleModel.findById(
+                user.decisionLetter
+              )) as ExampleDocument
+            ).data.file.mimetype,
+            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
+              (
+                (await exampleModel.findById(
+                  user.decisionLetter
+                )) as ExampleDocument
+              )._id
+            }`,
+          }
+        : null,
+    };
+
+    return res.status(200).json({
+      status: "success",
+      message: "data retreived successfully",
+      data: result,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(401).json({
+      status: "failed",
+      message: "invalid token",
+    });
+  }
+};
+
+export const GETEmployeeDetail = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: id,
+      },
+      select: {
+        id: true,
+        email: true,
+        username: true,
+        employmentId: true,
+        firstName: true,
+        lastName: true,
+        frontTitle: true,
+        backTitle: true,
+        workGroup: true,
+        workUnit: true,
+        workPart: true,
+        gender: true,
+        createdAt: true,
+        updatedAt: true,
+        leaves: true,
+        childs: true,
+        relationships: true,
+        identity: true,
+        photograph: true,
+        familyCertificate: true,
+        bpjsOfEmploymentFile: true,
+        bpjsOfHealthFile: true,
+        npwp: true,
+        latestEducationLevel: true,
+        maritalStatus: true,
+        religion: true,
+        identityNumber: true,
+        npwpNumber: true,
+        familyCertificateNumber: true,
+        jobDescription: true,
+        placementLocation: true,
+        startingYear: true,
+        decisionLetterNumber: true,
+        homeAddress: true,
+        neighborhood: true,
+        neighborhoodHead: true,
+        Province: true,
+        cityDistrict: true,
+        subdistrict: true,
+        ward: true,
+        birthPlace: true,
+        dateOfBirth: true,
+        phoneNumber: true,
+        telephone: true,
+        decisionLetter: true,
+        bpjsOfEmployment: true,
+        bpjsOfHealth: true,
+      },
+    });
+    const result = {
+      ...user,
+      identity: !!user?.identity
+        ? {
+            mimetype: (
+              (await exampleModel.findById(user.identity)) as ExampleDocument
+            ).data.file.mimetype,
+            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
+              ((await exampleModel.findById(user.identity)) as ExampleDocument)
+                ._id
+            }`,
+          }
+        : null,
+      photograph: !!user?.photograph
+        ? {
+            mimetype: (
+              (await exampleModel.findById(user.photograph)) as ExampleDocument
+            ).data.file.mimetype,
+            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
+              (
+                (await exampleModel.findById(
+                  user.photograph
+                )) as ExampleDocument
+              )._id
+            }`,
+          }
+        : null,
+      familyCertificate: !!user?.familyCertificate
+        ? {
+            mimetype: (
+              (await exampleModel.findById(
+                user.familyCertificate
+              )) as ExampleDocument
+            ).data.file.mimetype,
+            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
+              (
+                (await exampleModel.findById(
+                  user.familyCertificate
+                )) as ExampleDocument
+              )._id
+            }`,
+          }
+        : null,
+      bpjsOfEmploymentFile: !!user?.bpjsOfEmploymentFile
+        ? {
+            mimetype: (
+              (await exampleModel.findById(
+                user.bpjsOfEmploymentFile
+              )) as ExampleDocument
+            ).data.file.mimetype,
+            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
+              (
+                (await exampleModel.findById(
+                  user.bpjsOfEmploymentFile
+                )) as ExampleDocument
+              )._id
+            }`,
+          }
+        : null,
+      bpjsOfHealthFile: !!user?.bpjsOfHealthFile
+        ? {
+            mimetype: (
+              (await exampleModel.findById(
+                user.bpjsOfHealthFile
+              )) as ExampleDocument
+            ).data.file.mimetype,
+            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
+              (
+                (await exampleModel.findById(
+                  user.bpjsOfHealthFile
+                )) as ExampleDocument
+              )._id
+            }`,
+          }
+        : null,
+      npwp: !!user?.npwp
+        ? {
+            mimetype: (
+              (await exampleModel.findById(user.npwp)) as ExampleDocument
+            ).data.file.mimetype,
+            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
+              ((await exampleModel.findById(user.npwp)) as ExampleDocument)._id
+            }`,
+          }
+        : null,
+      decisionLetter: !!user?.decisionLetter
+        ? {
+            mimetype: (
+              (await exampleModel.findById(
+                user.decisionLetter
+              )) as ExampleDocument
+            ).data.file.mimetype,
+            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
+              (
+                (await exampleModel.findById(
+                  user.decisionLetter
+                )) as ExampleDocument
+              )._id
+            }`,
+          }
+        : null,
+    };
+
+    return res.status(200).json({
+      status: "success",
+      message: "retreive data successfull",
+      data: result,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      status: "failed",
+      message: "user not found",
+      data: error,
+    });
+  }
 };
