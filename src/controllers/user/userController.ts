@@ -35,7 +35,7 @@ export const POSTUserLogin = async (req: Request, res: Response) => {
         fullname: `${user?.firstName} ${user?.lastName}`,
         id: user?.id,
         email: user?.email,
-        image: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${user?.photograph}`,
+        image: `http://localhost:52000/api/file/${user?.photograph}`,
         role: user?.role,
       },
       process.env.JWT_SECRET_KEY as string
