@@ -31,7 +31,9 @@ export const POSTUserLogin = async (req: Request, res: Response) => {
         fullname: `${user?.firstName} ${user?.lastName}`,
         id: user?.id,
         email: user?.email,
-        image: `http://localhost:52000/api/file/${user?.photograph}`,
+        image: !!user?.photograph
+          ? `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${user?.photograph}`
+          : null,
         role: user?.role,
       },
       process.env.JWT_SECRET_KEY as string
@@ -717,7 +719,7 @@ export const GETWhoAmI = async (req: Request, res: Response) => {
             mimetype: (
               (await exampleModel.findById(user.identity)) as ExampleDocument
             ).data.file.mimetype,
-            link: `http://localhost:52000/api/file/${
+            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
               ((await exampleModel.findById(user.identity)) as ExampleDocument)
                 ._id
             }`,
@@ -728,7 +730,7 @@ export const GETWhoAmI = async (req: Request, res: Response) => {
             mimetype: (
               (await exampleModel.findById(user.photograph)) as ExampleDocument
             ).data.file.mimetype,
-            link: `http://localhost:52000/api/file/${
+            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
               (
                 (await exampleModel.findById(
                   user.photograph
@@ -744,7 +746,7 @@ export const GETWhoAmI = async (req: Request, res: Response) => {
                 user.familyCertificate
               )) as ExampleDocument
             ).data.file.mimetype,
-            link: `http://localhost:52000/api/file/${
+            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
               (
                 (await exampleModel.findById(
                   user.familyCertificate
@@ -760,7 +762,7 @@ export const GETWhoAmI = async (req: Request, res: Response) => {
                 user.bpjsOfEmploymentFile
               )) as ExampleDocument
             ).data.file.mimetype,
-            link: `http://localhost:52000/api/file/${
+            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
               (
                 (await exampleModel.findById(
                   user.bpjsOfEmploymentFile
@@ -776,7 +778,7 @@ export const GETWhoAmI = async (req: Request, res: Response) => {
                 user.bpjsOfHealthFile
               )) as ExampleDocument
             ).data.file.mimetype,
-            link: `http://localhost:52000/api/file/${
+            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
               (
                 (await exampleModel.findById(
                   user.bpjsOfHealthFile
@@ -790,7 +792,7 @@ export const GETWhoAmI = async (req: Request, res: Response) => {
             mimetype: (
               (await exampleModel.findById(user.npwp)) as ExampleDocument
             ).data.file.mimetype,
-            link: `http://localhost:52000/api/file/${
+            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
               ((await exampleModel.findById(user.npwp)) as ExampleDocument)._id
             }`,
           }
@@ -802,7 +804,7 @@ export const GETWhoAmI = async (req: Request, res: Response) => {
                 user.decisionLetter
               )) as ExampleDocument
             ).data.file.mimetype,
-            link: `http://localhost:52000/api/file/${
+            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
               (
                 (await exampleModel.findById(
                   user.decisionLetter
@@ -892,7 +894,7 @@ export const GETEmployeeDetail = async (req: Request, res: Response) => {
             mimetype: (
               (await exampleModel.findById(user.identity)) as ExampleDocument
             ).data.file.mimetype,
-            link: `http://localhost:52000/api/file/${
+            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
               ((await exampleModel.findById(user.identity)) as ExampleDocument)
                 ._id
             }`,
@@ -903,7 +905,7 @@ export const GETEmployeeDetail = async (req: Request, res: Response) => {
             mimetype: (
               (await exampleModel.findById(user.photograph)) as ExampleDocument
             ).data.file.mimetype,
-            link: `http://localhost:52000/api/file/${
+            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
               (
                 (await exampleModel.findById(
                   user.photograph
@@ -919,7 +921,7 @@ export const GETEmployeeDetail = async (req: Request, res: Response) => {
                 user.familyCertificate
               )) as ExampleDocument
             ).data.file.mimetype,
-            link: `http://localhost:52000/api/file/${
+            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
               (
                 (await exampleModel.findById(
                   user.familyCertificate
@@ -935,7 +937,7 @@ export const GETEmployeeDetail = async (req: Request, res: Response) => {
                 user.bpjsOfEmploymentFile
               )) as ExampleDocument
             ).data.file.mimetype,
-            link: `http://localhost:52000/api/file/${
+            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
               (
                 (await exampleModel.findById(
                   user.bpjsOfEmploymentFile
@@ -951,7 +953,7 @@ export const GETEmployeeDetail = async (req: Request, res: Response) => {
                 user.bpjsOfHealthFile
               )) as ExampleDocument
             ).data.file.mimetype,
-            link: `http://localhost:52000/api/file/${
+            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
               (
                 (await exampleModel.findById(
                   user.bpjsOfHealthFile
@@ -965,7 +967,7 @@ export const GETEmployeeDetail = async (req: Request, res: Response) => {
             mimetype: (
               (await exampleModel.findById(user.npwp)) as ExampleDocument
             ).data.file.mimetype,
-            link: `http://localhost:52000/api/file/${
+            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
               ((await exampleModel.findById(user.npwp)) as ExampleDocument)._id
             }`,
           }
@@ -977,7 +979,7 @@ export const GETEmployeeDetail = async (req: Request, res: Response) => {
                 user.decisionLetter
               )) as ExampleDocument
             ).data.file.mimetype,
-            link: `http://localhost:52000/api/file/${
+            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
               (
                 (await exampleModel.findById(
                   user.decisionLetter
