@@ -4,10 +4,6 @@ import prisma from "../../../../prisma/prisma";
 export const POSTCreateWard = async (req: Request, res: Response) => {
   try {
     const { wardName, subdistrict } = req.body;
-    console.log("INI CREATE WARD", {
-      wardName,
-      subdistrict,
-    });
 
     const result = await prisma.ward.create({
       data: {

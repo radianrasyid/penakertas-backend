@@ -141,7 +141,7 @@ model CityDistrict {
   name         String
   value        String
   provinceId   String
-  province     Province      @relation(fields: [provinceId], references: [id])
+  province     Province      @relation(fields: [provinceId], references: [id], onDelete: Cascade)
   subdistricts Subdistrict[]
   createdAt    DateTime      @default(now()) @db.Timestamptz(6)
   updatedAt    DateTime      @updatedAt @db.Timestamptz(6)
@@ -152,7 +152,7 @@ model Subdistrict {
   name           String
   value          String
   cityDistrictId String
-  cityDistricts  CityDistrict @relation(fields: [cityDistrictId], references: [id])
+  cityDistricts  CityDistrict @relation(fields: [cityDistrictId], references: [id], onDelete: Cascade)
   wards          Ward[]
   createdAt      DateTime     @default(now()) @db.Timestamptz(6)
   updatedAt      DateTime     @updatedAt @db.Timestamptz(6)
@@ -163,7 +163,7 @@ model Ward {
   name          String
   value         String
   subdistrictId String
-  subdistrict   Subdistrict @relation(fields: [subdistrictId], references: [id])
+  subdistrict   Subdistrict @relation(fields: [subdistrictId], references: [id], onDelete: Cascade)
   createdAt     DateTime    @default(now()) @db.Timestamptz(6)
   updatedAt     DateTime    @updatedAt @db.Timestamptz(6)
 }

@@ -33,14 +33,14 @@ export const PUTEditDistrict = async (req: Request, res: Response) => {
   try {
     const { name } = req.body;
     const { id } = req.query;
-
+    console.log("ini body", req.body);
     const result = await prisma.cityDistrict.update({
       where: {
         id: id as string,
       },
       data: {
         name: name,
-        value: name.toUpperCase(),
+        value: name?.toUpperCase(),
       },
     });
 
@@ -50,6 +50,7 @@ export const PUTEditDistrict = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error) {
+    console.log(error);
     return res.status(400).json({
       status: "failed",
       message: "failed edited district data",
@@ -196,6 +197,7 @@ export const DELETEDistrict = async (req: Request, res: Response) => {
       data: result,
     });
   } catch (error) {
+    console.log(error);
     return res.status(400).json({
       status: "failed",
       message: "failed deleted district data",

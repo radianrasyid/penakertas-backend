@@ -35,6 +35,7 @@ import {
   POSTCreateWard,
   PUTEditWard,
 } from "./controllers/geolocation/ward/wardController";
+import { AuthMiddleware } from "./controllers/middleware/authMiddleware";
 import { GETEmployeeStatistic } from "./controllers/statistic/statisticController";
 import {
   GETListGender,
@@ -43,6 +44,8 @@ import {
   GETListReligion,
 } from "./controllers/user/identityController";
 import {
+  GETEmployeeDetail,
+  GETWhoAmI,
   POSTBulkInsert,
   POSTCheckRole,
   POSTCreateUser,
@@ -57,7 +60,7 @@ import {
 import { upload } from "./lib/processors";
 
 const app = express();
-app.use(cors());
+app.use(cors({ origin: "*" }));
 const PORT = 52000;
 const HOST = "localhost";
 
@@ -73,7 +76,11 @@ app.get("/", (req: Request, res: Response) => {
 // USER UNGUARDED
 app.post("/api/user/login", POSTUserLogin);
 app.post("/api/user/bulk-insert", POSTBulkInsert);
+// FILE
+app.get("/api/file/:fileId", GETFileById);
 
+app.use(AuthMiddleware);
+app.get("/api/user/whoami", GETWhoAmI);
 // STATISTICS
 app.get("/api/statistic/admin/dashboard", GETEmployeeStatistic);
 
@@ -146,6 +153,7 @@ app.post(
   POSTCreateUser
 );
 app.get("/api/user/employee", GETAllUserPaginated);
+app.get("/api/user/:id", GETEmployeeDetail);
 
 // WORK
 app.get("/api/work/group", GETListWorkGroup);
@@ -157,9 +165,6 @@ app.get("/api/identity/religion", GETListReligion);
 app.get("/api/identity/gender", GETListGender);
 app.get("/api/identity/education-level", GETListLatestEducation);
 app.get("/api/identity/marital-status", GETListMaritalStatus);
-
-// FILE
-app.get("/api/file/:fileId", GETFileById);
 
 app.listen(PORT, HOST, () => {
   console.log(`server is running on http://${HOST}:${PORT}`);
