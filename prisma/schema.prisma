@@ -12,8 +12,8 @@ datasource db {
 
 enum userRole {
   ADMIN
-  SUPER_ADMIN
-  USER
+  ROOT
+  PEGAWAI
 }
 
 enum maritalStatus {
@@ -172,8 +172,6 @@ model LeaveType {
   id          String   @id @default(cuid())
   name        String
   description String
-  leave       Leave    @relation(fields: [leaveId], references: [id])
-  leaveId     String
   createdAt   DateTime @default(now()) @db.Timestamptz(6)
   updatedAt   DateTime @updatedAt @db.Timestamptz(6)
 }
@@ -187,15 +185,16 @@ model LeaveFile {
 }
 
 model Leave {
-  id        String      @id @default(cuid())
-  skNumber  String
-  skDate    DateTime
-  startDate DateTime
-  endDate   DateTime
-  leaveType LeaveType[]
-  users     UserLeave[]
-  createdAt DateTime    @default(now()) @db.Timestamptz(6)
-  updatedAt DateTime    @updatedAt @db.Timestamptz(6)
+  id          String      @id @default(cuid())
+  skNumber    String
+  skDate      DateTime
+  startDate   DateTime
+  endDate     DateTime
+  leaveType   String
+  description String?
+  users       UserLeave[]
+  createdAt   DateTime    @default(now()) @db.Timestamptz(6)
+  updatedAt   DateTime    @updatedAt @db.Timestamptz(6)
 }
 
 model UserLeave {
@@ -214,23 +213,21 @@ model ChildActivity {
   id        String   @id @default(cuid())
   name      String
   value     String
-  child     Child    @relation(fields: [childId], references: [id])
-  childId   String   @unique
   createdAt DateTime @default(now()) @db.Timestamptz(6)
   updatedAt DateTime @updatedAt @db.Timestamptz(6)
 }
 
 model Child {
-  id         String         @id @default(cuid())
+  id         String      @id @default(cuid())
   name       String
   childOrder Int
-  activity   ChildActivity?
+  activity   String
   status     String
-  parent     User           @relation(fields: [parentId], references: [id])
+  parent     User        @relation(fields: [parentId], references: [id])
   parentId   String
   files      ChildFile[]
-  createdAt  DateTime       @default(now()) @db.Timestamptz(6)
-  updatedAt  DateTime       @updatedAt @db.Timestamptz(6)
+  createdAt  DateTime    @default(now()) @db.Timestamptz(6)
+  updatedAt  DateTime    @updatedAt @db.Timestamptz(6)
 }
 
 model ChildStatus {

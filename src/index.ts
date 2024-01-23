@@ -2,6 +2,12 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import express, { Request, Response } from "express";
 import "../prisma/mongo";
+import {
+  DELETEAccessData,
+  GETAccessDataById,
+  GetAllAccessData,
+  PUTUpdateData,
+} from "./controllers/accessController/accessController";
 import { GETFileById } from "./controllers/file/fileController";
 import {
   DELETEDistrict,
@@ -78,6 +84,10 @@ app.post("/api/user/login", POSTUserLogin);
 app.post("/api/user/bulk-insert", POSTBulkInsert);
 // FILE
 app.get("/api/file/:fileId", GETFileById);
+app.get("/api/access", GetAllAccessData);
+app.get("/api/access/:id", GETAccessDataById);
+app.put("/api/access/:id", PUTUpdateData);
+app.delete("/api/access/:id", DELETEAccessData);
 
 app.use(AuthMiddleware);
 app.get("/api/user/whoami", GETWhoAmI);
