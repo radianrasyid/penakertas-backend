@@ -13,11 +13,24 @@ export const POSTUserLogin = async (req: Request, res: Response) => {
   try {
     const { username, password } = req.body;
 
-    const user = await prisma.user.findUnique({
+    const user = await prisma.user.findFirst({
       where: {
-        username: username,
+        OR: [
+          {
+            username: username,
+          },
+          {
+            employmentId: username,
+          },
+        ],
       },
     });
+    if (user?.email == undefined) {
+      return res.status(400).json({
+        status: "failed",
+        message: "credential might be wrong",
+      });
+    }
     const isPasswordMatch = await bcrypt.compareSync(
       password,
       user?.password as string
@@ -35,7 +48,7 @@ export const POSTUserLogin = async (req: Request, res: Response) => {
         id: user?.id,
         email: user?.email,
         image: !!user?.photograph
-          ? `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${user?.photograph}`
+          ? `http://localhost:52000/api/file/${user?.photograph}`
           : null,
         role: user?.role,
         access: await userAccess.findOne({ "data.title": user?.role }),
@@ -49,6 +62,7 @@ export const POSTUserLogin = async (req: Request, res: Response) => {
       data: jwt,
     });
   } catch (error) {
+    console.log(error);
     return res.status(400).json({
       status: "failed",
       message: "something went wrong",
@@ -1363,6 +1377,100 @@ export const POSTBulkInsert = async (req: Request, res: Response) => {
         },
       },
     });
+
+    await prisma.category.createMany({
+      data: [
+        {
+          name: "Juru Muda",
+          additionalName: "Ia",
+          value: "Ia / Juru Muda",
+        },
+        {
+          name: "Juru Muda Tk I",
+          additionalName: "Ib",
+          value: "Ib / Juru Muda Tk I",
+        },
+        {
+          name: "Juru",
+          additionalName: "Ic",
+          value: "Ic / Juru",
+        },
+      ],
+    });
+    await prisma.leaveType.createMany({
+      data: [
+        {
+          name: "A",
+          description: "A",
+        },
+        {
+          name: "B",
+          description: "B",
+        },
+      ],
+    });
+    await prisma.childActivity.createMany({
+      data: ["Pelajar", "Mahasiswa", "Pekerja", "Belum Sekolah"].map((i) => {
+        return {
+          name: i,
+          value: i.toUpperCase(),
+        };
+      }),
+    });
+    await prisma.profession.createMany({
+      data: [
+        "Swasta",
+        "Pegawai Negeri Sipil",
+        "Non ASN (PTT/THL)",
+        "Pensiunan",
+        "Lainnya",
+      ].map((i) => {
+        return {
+          name: i,
+          value: i.toUpperCase(),
+        };
+      }),
+    });
+    await prisma.childStatus.createMany({
+      data: ["Anak Kandung", "Anak Sambung"].map((i) => {
+        return {
+          name: i,
+          value: i.toUpperCase(),
+        };
+      }),
+    });
+    await prisma.sourceOfSalary.createMany({
+      data: ["APBD", "APBN"].map((i) => {
+        return {
+          name: i,
+          value: i.toUpperCase(),
+        };
+      }),
+    });
+    await prisma.parentStatus.createMany({
+      data: ["Hidup", "Meninggal"].map((i) => {
+        return {
+          name: i,
+          value: i.toUpperCase(),
+        };
+      }),
+    });
+    await prisma.partnerStatus.createMany({
+      data: ["Suami", "Istri"].map((i) => {
+        return {
+          name: i,
+          value: i.toUpperCase(),
+        };
+      }),
+    });
+    await prisma.childSupport.createMany({
+      data: ["Dapat", "Tidak Dapat"].map((i) => {
+        return {
+          name: i,
+          value: i.toUpperCase(),
+        };
+      }),
+    });
     await prisma.user.createMany({
       data: [
         {
@@ -2008,7 +2116,7 @@ export const GETWhoAmI = async (req: Request, res: Response) => {
             mimetype: (
               (await exampleModel.findById(user.identity)) as ExampleDocument
             ).data.file.mimetype,
-            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
+            link: `http://localhost:52000/api/file/${
               ((await exampleModel.findById(user.identity)) as ExampleDocument)
                 ._id
             }`,
@@ -2019,7 +2127,7 @@ export const GETWhoAmI = async (req: Request, res: Response) => {
             mimetype: (
               (await exampleModel.findById(user.photograph)) as ExampleDocument
             ).data.file.mimetype,
-            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
+            link: `http://localhost:52000/api/file/${
               (
                 (await exampleModel.findById(
                   user.photograph
@@ -2035,7 +2143,7 @@ export const GETWhoAmI = async (req: Request, res: Response) => {
                 user.familyCertificate
               )) as ExampleDocument
             ).data.file.mimetype,
-            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
+            link: `http://localhost:52000/api/file/${
               (
                 (await exampleModel.findById(
                   user.familyCertificate
@@ -2051,7 +2159,7 @@ export const GETWhoAmI = async (req: Request, res: Response) => {
                 user.bpjsOfEmploymentFile
               )) as ExampleDocument
             ).data.file.mimetype,
-            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
+            link: `http://localhost:52000/api/file/${
               (
                 (await exampleModel.findById(
                   user.bpjsOfEmploymentFile
@@ -2067,7 +2175,7 @@ export const GETWhoAmI = async (req: Request, res: Response) => {
                 user.bpjsOfHealthFile
               )) as ExampleDocument
             ).data.file.mimetype,
-            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
+            link: `http://localhost:52000/api/file/${
               (
                 (await exampleModel.findById(
                   user.bpjsOfHealthFile
@@ -2081,7 +2189,7 @@ export const GETWhoAmI = async (req: Request, res: Response) => {
             mimetype: (
               (await exampleModel.findById(user.npwp)) as ExampleDocument
             ).data.file.mimetype,
-            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
+            link: `http://localhost:52000/api/file/${
               ((await exampleModel.findById(user.npwp)) as ExampleDocument)._id
             }`,
           }
@@ -2093,7 +2201,7 @@ export const GETWhoAmI = async (req: Request, res: Response) => {
                 user.decisionLetter
               )) as ExampleDocument
             ).data.file.mimetype,
-            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
+            link: `http://localhost:52000/api/file/${
               (
                 (await exampleModel.findById(
                   user.decisionLetter
@@ -2122,10 +2230,21 @@ export const GETWhoAmI = async (req: Request, res: Response) => {
 export const GETEmployeeDetail = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+    console.log("ini id", id);
 
-    const user = await prisma.user.findUnique({
+    const user = await prisma.user.findFirst({
       where: {
-        id: id,
+        OR: [
+          {
+            id: id,
+          },
+          {
+            username: id,
+          },
+          {
+            email: id,
+          },
+        ],
       },
       select: {
         id: true,
@@ -2184,7 +2303,7 @@ export const GETEmployeeDetail = async (req: Request, res: Response) => {
             mimetype: (
               (await exampleModel.findById(user.identity)) as ExampleDocument
             ).data.file.mimetype,
-            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
+            link: `http://localhost:52000/api/file/${
               ((await exampleModel.findById(user.identity)) as ExampleDocument)
                 ._id
             }`,
@@ -2195,7 +2314,7 @@ export const GETEmployeeDetail = async (req: Request, res: Response) => {
             mimetype: (
               (await exampleModel.findById(user.photograph)) as ExampleDocument
             ).data.file.mimetype,
-            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
+            link: `http://localhost:52000/api/file/${
               (
                 (await exampleModel.findById(
                   user.photograph
@@ -2211,7 +2330,7 @@ export const GETEmployeeDetail = async (req: Request, res: Response) => {
                 user.familyCertificate
               )) as ExampleDocument
             ).data.file.mimetype,
-            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
+            link: `http://localhost:52000/api/file/${
               (
                 (await exampleModel.findById(
                   user.familyCertificate
@@ -2227,7 +2346,7 @@ export const GETEmployeeDetail = async (req: Request, res: Response) => {
                 user.bpjsOfEmploymentFile
               )) as ExampleDocument
             ).data.file.mimetype,
-            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
+            link: `http://localhost:52000/api/file/${
               (
                 (await exampleModel.findById(
                   user.bpjsOfEmploymentFile
@@ -2243,7 +2362,7 @@ export const GETEmployeeDetail = async (req: Request, res: Response) => {
                 user.bpjsOfHealthFile
               )) as ExampleDocument
             ).data.file.mimetype,
-            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
+            link: `http://localhost:52000/api/file/${
               (
                 (await exampleModel.findById(
                   user.bpjsOfHealthFile
@@ -2257,7 +2376,7 @@ export const GETEmployeeDetail = async (req: Request, res: Response) => {
             mimetype: (
               (await exampleModel.findById(user.npwp)) as ExampleDocument
             ).data.file.mimetype,
-            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
+            link: `http://localhost:52000/api/file/${
               ((await exampleModel.findById(user.npwp)) as ExampleDocument)._id
             }`,
           }
@@ -2269,7 +2388,7 @@ export const GETEmployeeDetail = async (req: Request, res: Response) => {
                 user.decisionLetter
               )) as ExampleDocument
             ).data.file.mimetype,
-            link: `https://relaxed-caiman-strongly.ngrok-free.app/api/file/${
+            link: `http://localhost:52000/api/file/${
               (
                 (await exampleModel.findById(
                   user.decisionLetter
@@ -2279,6 +2398,8 @@ export const GETEmployeeDetail = async (req: Request, res: Response) => {
           }
         : null,
     };
+
+    console.log("ini result user data", user);
 
     return res.status(200).json({
       status: "success",

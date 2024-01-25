@@ -144,3 +144,28 @@ export const GETMaritalStatusPaginated = async (
     });
   }
 };
+
+export const DELETEMaritalStatus = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const result = await prisma.maritalStatus.delete({
+      where: {
+        id,
+      },
+    });
+
+    return res.status(200).json({
+      status: "success",
+      message: "delete data success",
+      data: result,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: "failed",
+      message: "delete data failed",
+      data: error,
+    });
+  }
+};

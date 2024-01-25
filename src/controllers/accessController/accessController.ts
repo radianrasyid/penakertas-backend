@@ -54,7 +54,6 @@ export const PUTUpdateData = async (req: Request, res: Response) => {
           runValidators: true,
         }
       );
-
       return res.status(200).json({
         status: "success",
         message: "edit data success",

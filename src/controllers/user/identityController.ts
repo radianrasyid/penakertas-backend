@@ -157,6 +157,31 @@ export const PUTEditLatestEducation = async (req: Request, res: Response) => {
   }
 };
 
+export const DELETELatestEducation = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const result = await prisma.educationLevel.delete({
+      where: {
+        id,
+      },
+    });
+
+    return res.status(200).json({
+      status: "success",
+      message: "delete data success",
+      data: result,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: "failed",
+      message: "delete data failed",
+      data: error,
+    });
+  }
+};
+
 export const GETLatestEducationPaginate = async (
   req: Request,
   res: Response
@@ -366,7 +391,13 @@ export const GETReligionPaginate = async (req: Request, res: Response) => {
         ],
       },
     });
-
+    console.log({
+      data: datas,
+      totalPages: Math.ceil(allDatas / Number(pageSize)),
+      currentPage: Number(pageNumber),
+      pageSize: Number(pageSize),
+      totalData: allDatas,
+    });
     return res.status(200).json({
       status: "success",
       message: "retreive data successful",
@@ -380,6 +411,31 @@ export const GETReligionPaginate = async (req: Request, res: Response) => {
     return res.status(400).json({
       status: "failed",
       message: "retreive data failed",
+      data: error,
+    });
+  }
+};
+
+export const DELETEReligion = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const result = await prisma.religion.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    return res.status(201).json({
+      status: "success",
+      message: "delete data success",
+      data: result,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: "failed",
+      message: "delete data failed",
       data: error,
     });
   }

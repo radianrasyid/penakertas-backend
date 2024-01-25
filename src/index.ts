@@ -44,10 +44,20 @@ import {
 import { AuthMiddleware } from "./controllers/middleware/authMiddleware";
 import { GETEmployeeStatistic } from "./controllers/statistic/statisticController";
 import {
+  DELETELatestEducation,
+  DELETEReligion,
+  GETLatestEducationById,
+  GETLatestEducationPaginate,
   GETListGender,
   GETListLatestEducation,
   GETListMaritalStatus,
   GETListReligion,
+  GETReligionById,
+  GETReligionPaginate,
+  POSTCreateLatestEducation,
+  POSTCreateReligion,
+  PUTEditLatestEducation,
+  PUTEditReligion,
 } from "./controllers/user/identityController";
 import {
   GETEmployeeDetail,
@@ -58,6 +68,33 @@ import {
   POSTUserLogin,
 } from "./controllers/user/userController";
 import { GETAllUserPaginated } from "./controllers/user/userFileUploadController";
+import {
+  DELETEWorkGroup,
+  GETWorkGroupById,
+  GETWorkGroupPaginated,
+  POSTCreateWorkGroup,
+  PUTEditWorkGroup,
+} from "./controllers/userIdentity/workGroupController";
+import {
+  DELETEWorkPart,
+  GETWorkPartById,
+  GETWorkPartPaginated,
+  POSTCreateWorkPart,
+  PUTEditWorkPart,
+} from "./controllers/userIdentity/workPartController";
+import {
+  DELETEWorkUnit,
+  GETWorkUnitById,
+  GETWorkUnitPaginated,
+  POSTCreateWorkUnit,
+} from "./controllers/userIdentity/workUnitController";
+import {
+  DELETEMaritalStatus,
+  GETMaritalStatusById,
+  GETMaritalStatusPaginated,
+  POSTCreateMaritalStatus,
+  PUTEditMaritalStatus,
+} from "./controllers/userInfo/maritalStatusController";
 import {
   GETListWorkGroup,
   GETListWorkPart,
@@ -126,6 +163,33 @@ app.get("/api/geolocation/ward/get-all", GETAllWard);
 app.get("/api/geolocation/ward/get-by-id", GETWardById);
 app.get("/api/geolocation/ward/get-paginate", GETWardPaginate);
 
+// RELIGION
+app.post("/api/identity/religion", POSTCreateReligion);
+app.delete("/api/identity/religion/:id", DELETEReligion);
+app.put("/api/identity/religion/:id", PUTEditReligion);
+app.get("/api/identity/religion", GETListReligion);
+app.get("/api/identity/religion/:id", GETReligionById);
+app.get("/api/identity/religion-paginate", GETReligionPaginate);
+
+// GENDER
+app.get("/api/identity/gender", GETListGender);
+
+// EDUCATION LEVEL
+app.post("/api/identity/education-level", POSTCreateLatestEducation);
+app.delete("/api/identity/education-level/:id", DELETELatestEducation);
+app.put("/api/identity/education-level/:id", PUTEditLatestEducation);
+app.get("/api/identity/education-level", GETListLatestEducation);
+app.get("/api/identity/education-level/:id", GETLatestEducationById);
+app.get("/api/identity/education-level-paginate", GETLatestEducationPaginate);
+
+// MARITAL STATUS
+app.post("/api/identity/marital-status", POSTCreateMaritalStatus);
+app.delete("/api/identity/marital-status/:id", DELETEMaritalStatus);
+app.put("/api/identity/marital-status/:id", PUTEditMaritalStatus);
+app.get("/api/identity/marital-status", GETListMaritalStatus);
+app.get("/api/identity/marital-status/:id", GETMaritalStatusById);
+app.get("/api/identity/marital-status-paginate", GETMaritalStatusPaginated);
+
 // USER
 app.post("/api/user/check-role", POSTCheckRole);
 app.post(
@@ -165,16 +229,28 @@ app.post(
 app.get("/api/user/employee", GETAllUserPaginated);
 app.get("/api/user/:id", GETEmployeeDetail);
 
-// WORK
+// WORK GROUP
+app.post("/api/work/group", POSTCreateWorkGroup);
+app.delete("/api/work/group/:id", DELETEWorkGroup);
+app.put("/api/work/group", PUTEditWorkGroup);
 app.get("/api/work/group", GETListWorkGroup);
-app.get("/api/work/unit", GETListWorkUnit);
-app.get("/api/work/part", GETListWorkPart);
+app.get("/api/work/group/:id", GETWorkGroupById);
+app.get("/api/work/group-paginate", GETWorkGroupPaginated);
 
-// IDENTITY
-app.get("/api/identity/religion", GETListReligion);
-app.get("/api/identity/gender", GETListGender);
-app.get("/api/identity/education-level", GETListLatestEducation);
-app.get("/api/identity/marital-status", GETListMaritalStatus);
+// WORK PART
+app.post("/api/work/part", POSTCreateWorkPart);
+app.delete("/api/work/part", DELETEWorkPart);
+app.put("/api/work/part/:id", PUTEditWorkPart);
+app.get("/api/work/part", GETListWorkPart);
+app.get("/api/work/part/:id", GETWorkPartById);
+app.get("/api/work/part-paginate", GETWorkPartPaginated);
+
+// WORK UNIT
+app.post("/api/work/unit", POSTCreateWorkUnit);
+app.delete("/api/work/unit/:id", DELETEWorkUnit);
+app.get("/api/work/unit", GETListWorkUnit);
+app.get("/api/work/unit/:id", GETWorkUnitById);
+app.get("/api/work/unit-paginate", GETWorkUnitPaginated);
 
 app.listen(PORT, HOST, () => {
   console.log(`server is running on http://${HOST}:${PORT}`);
