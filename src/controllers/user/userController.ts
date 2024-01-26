@@ -7,7 +7,7 @@ import exampleModel, {
 } from "../../../prisma/mongooseModel";
 import prisma from "../../../prisma/prisma";
 import { createChecksum } from "../../lib/processors";
-import { reqFiles } from "../../lib/types/general";
+import { Data, reqFiles } from "../../lib/types/general";
 
 export const POSTUserLogin = async (req: Request, res: Response) => {
   try {
@@ -51,6 +51,7 @@ export const POSTUserLogin = async (req: Request, res: Response) => {
           ? `http://localhost:52000/api/file/${user?.photograph}`
           : null,
         role: user?.role,
+        expire: new Date().getTime() + 5000,
         access: await userAccess.findOne({ "data.title": user?.role }),
       },
       process.env.JWT_SECRET_KEY as string
@@ -66,6 +67,82 @@ export const POSTUserLogin = async (req: Request, res: Response) => {
     return res.status(400).json({
       status: "failed",
       message: "something went wrong",
+      data: error,
+    });
+  }
+};
+
+export const GETRefreshToken = async (req: Request, res: Response) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+
+    if (!token) {
+      return res.status(401).json({
+        status: "failed",
+        message: "Unauthorized!",
+      });
+    }
+
+    const decoded = jsonwebtoken.verify(
+      token,
+      process.env.JWT_SECRET_KEY as string
+    ) as any;
+
+    if (!decoded.username) {
+      return res.status(401).json({
+        status: "failed",
+        message: "Unauthorized!",
+      });
+    }
+
+    const timeDifference =
+      (new Date().getTime() - decoded.iat * 1000) / 1000 / 60;
+
+    if (Number(timeDifference.toFixed()))
+      return res.status(401).json({
+        status: "failed",
+        message: "unauthorized",
+      });
+
+    const user = await prisma.user.findFirst({
+      where: {
+        OR: [
+          {
+            username: decoded.username,
+          },
+          {
+            email: decoded.email,
+          },
+        ],
+      },
+    });
+
+    const jwt = jsonwebtoken.sign(
+      {
+        username: user?.username,
+        fullname: `${user?.firstName} ${user?.lastName}`,
+        id: user?.id,
+        email: user?.email,
+        image: !!user?.photograph
+          ? `http://localhost:52000/api/file/${user?.photograph}`
+          : null,
+        role: user?.role,
+        expire: new Date().getTime() + 5000,
+        access: await userAccess.findOne({ "data.title": user?.role }),
+      },
+      process.env.JWT_SECRET_KEY as string
+    );
+
+    return res.status(200).json({
+      status: "success",
+      message: "refreshed",
+      data: jwt,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(401).json({
+      status: "failed",
+      message: "Unauthorized!",
       data: error,
     });
   }
@@ -1727,325 +1804,68 @@ export const POSTBulkInsert = async (req: Request, res: Response) => {
   }
 };
 
-export const POSTCreateUser = async (req: Request, res: Response) => {
+export const PATCHUserData = async (req: Request, res: Response) => {
   try {
+    const { id } = req.params;
     const {
-      address,
       backTitle,
       birthPlace,
       bpjsOfEmployment,
       bpjsOfHealth,
+      childs,
+      cityDistrict,
+      createdAt,
       dateOfBirth,
       decisionLetterNumber,
-      district,
       email,
+      employmentId,
       familyCertificateNumber,
-      firstname,
+      firstName,
       frontTitle,
       gender,
+      homeAddress,
       identityNumber,
-      lastname,
-      latestEducation,
+      jobDescription,
+      lastName,
+      latestEducationLevel,
+      leaves,
       maritalStatus,
       neighborhood,
       neighborhoodHead,
-      npwp,
-      nrpt,
+      npwpNumber,
       phoneNumber,
-      placement,
-      province,
+      placementLocation,
+      Province,
+      relationships,
       religion,
-      startYear,
+      startingYear,
       subdistrict,
       telephone,
       ward,
-      workDescription,
       workGroup,
       workPart,
-      npwpNumber,
       workUnit,
-    }: {
-      nrpt: string;
-      firstname: string;
-      lastname: string;
-      frontTitle: string;
-      backTitle: string;
-      workGroup: string;
-      workUnit: string;
-      workPart: string;
-      religion: string | null;
-      gender: string | null;
-      latestEducation: string | null;
-      maritalStatus: string | null;
-      workDescription: string | null;
-      placement: string | null;
-      startYear: string;
-      decisionLetterNumber: string | null;
-      neighborhood: string | null;
-      neighborhoodHead: string | null;
-      province: string | null;
-      district: string | null;
-      subdistrict: string | null;
-      ward: string | null;
-      address: string | null;
-      birthPlace: string | null;
-      dateOfBirth: string | Date | null;
-      phoneNumber: string | null;
-      telephone: string | null;
-      email: string | null;
-      familyCertificateNumber: string | null;
-      identityNumber: string | null;
-      npwp: string | null;
-      npwpNumber: string | null;
-      bpjsOfEmployment: string | null;
-      bpjsOfHealth: string | null;
     } = req.body;
-
-    const {
-      photographFile,
-      familyCertificateFile,
-      bpjsOfEmploymentFile,
-      decisionLetterFile,
-      identityFile,
-      npwpFile,
-      bpjsOfHealthFile,
-    } = req.files as reqFiles;
-    let filesResponse = {
-      resMongoPhotograph: null,
-      resMongoFamCert: null,
-      resMongoBpjsEmploy: null,
-      resMongoDecLetter: null,
-      resMongoIdFile: null,
-      resMongoNpFile: null,
-      resMongoBpjsHealth: null,
-    } as {
-      resMongoPhotograph: null | any;
-      resMongoFamCert: null | any;
-      resMongoBpjsEmploy: null | any;
-      resMongoDecLetter: null | any;
-      resMongoIdFile: null | any;
-      resMongoNpFile: null | any;
-      resMongoBpjsHealth: null | any;
-    };
-
-    switch (true) {
-      case !!photographFile:
-        const photograph = photographFile[0];
-        const combinedPhotographChecksum = `${photograph.fieldname}${
-          photograph.originalname
-        }${photograph.size}${photograph.buffer.toString()}`;
-        const checksumPhotograph = createChecksum(combinedPhotographChecksum);
-
-        const photographToSave = new exampleModel({
-          data: {
-            id: new Date().getTime(),
-            file: {
-              ...photograph,
-              checksum: checksumPhotograph,
-            },
-          },
-        });
-
-        const resMongoPhotograph = await photographToSave.save();
-        filesResponse = {
-          ...filesResponse,
-          resMongoPhotograph: resMongoPhotograph,
-        };
-      case !!familyCertificateFile:
-        const famCert = familyCertificateFile[0];
-        const combinedFamCertCheckum = `${famCert.fieldname}${
-          famCert.originalname
-        }${famCert.size}${famCert.buffer.toString()}`;
-        const checksumFamCert = createChecksum(combinedFamCertCheckum);
-
-        const famCertToSave = new exampleModel({
-          data: {
-            id: new Date().getTime(),
-            file: {
-              ...famCert,
-              checksum: checksumFamCert,
-            },
-          },
-        });
-
-        const resMongoFamCert = await famCertToSave.save();
-        filesResponse = {
-          ...filesResponse,
-          resMongoFamCert: resMongoFamCert,
-        };
-      case !!bpjsOfEmploymentFile:
-        const bpjsEmploy = bpjsOfEmploymentFile[0];
-        const combinedbpjsEmployCheckum = `${bpjsEmploy.fieldname}${
-          bpjsEmploy.originalname
-        }${bpjsEmploy.size}${bpjsEmploy.buffer.toString()}`;
-        const checksumBpjsEmploy = createChecksum(combinedbpjsEmployCheckum);
-
-        const bpjsEmployToSave = new exampleModel({
-          data: {
-            id: new Date().getTime(),
-            file: {
-              ...bpjsEmploy,
-              checksum: checksumBpjsEmploy,
-            },
-          },
-        });
-
-        const resMongoBpjsEmploy = await bpjsEmployToSave.save();
-        filesResponse = {
-          ...filesResponse,
-          resMongoBpjsEmploy: resMongoBpjsEmploy,
-        };
-      case !!decisionLetterFile:
-        const decLetter = decisionLetterFile[0];
-        const combinedDecLetterCheckum = `${decLetter.fieldname}${
-          decLetter.originalname
-        }${decLetter.size}${decLetter.buffer.toString()}`;
-        const checksumDecLetter = createChecksum(combinedDecLetterCheckum);
-
-        const decLetterToSave = new exampleModel({
-          data: {
-            id: new Date().getTime(),
-            file: {
-              ...decLetter,
-              checksum: checksumDecLetter,
-            },
-          },
-        });
-
-        const resMongoDecLetter = await decLetterToSave.save();
-        filesResponse = {
-          ...filesResponse,
-          resMongoDecLetter: resMongoDecLetter,
-        };
-      case !!identityFile:
-        const idFile = identityFile[0];
-        const combinedIdFileCheckum = `${idFile.fieldname}${
-          idFile.originalname
-        }${idFile.size}${idFile.buffer.toString()}`;
-        const checksumIdFile = createChecksum(combinedIdFileCheckum);
-
-        const idFileToSave = new exampleModel({
-          data: {
-            id: new Date().getTime(),
-            file: {
-              ...idFile,
-              checksum: checksumIdFile,
-            },
-          },
-        });
-
-        const resMongoIdFile = await idFileToSave.save();
-        filesResponse = {
-          ...filesResponse,
-          resMongoIdFile: resMongoIdFile,
-        };
-      case !!npwpFile:
-        const npFile = npwpFile[0];
-        const combinedNpFileCheckum = `${npFile.fieldname}${
-          npFile.originalname
-        }${npFile.size}${npFile.buffer.toString()}`;
-        const checksumNpFile = createChecksum(combinedNpFileCheckum);
-
-        const npFileToSave = new exampleModel({
-          data: {
-            id: new Date().getTime(),
-            file: {
-              ...npFile,
-              checksum: checksumNpFile,
-            },
-          },
-        });
-
-        const resMongoNpFile = await npFileToSave.save();
-        filesResponse = {
-          ...filesResponse,
-          resMongoNpFile: resMongoNpFile,
-        };
-      case !!bpjsOfHealthFile:
-        const bpjsHealth = bpjsOfHealthFile[0];
-        const combinedbpjsHealthCheckum = `${bpjsHealth.fieldname}${
-          bpjsHealth.originalname
-        }${bpjsHealth.size}${bpjsHealth.buffer.toString()}`;
-        const checksumBpjsHealth = createChecksum(combinedbpjsHealthCheckum);
-
-        const bpjsHealthToSave = new exampleModel({
-          data: {
-            id: new Date().getTime(),
-            file: {
-              ...bpjsHealth,
-              checksum: checksumBpjsHealth,
-            },
-          },
-        });
-
-        const resMongoBpjsHealth = await bpjsHealthToSave.save();
-        filesResponse = {
-          ...filesResponse,
-          resMongoBpjsHealth: resMongoBpjsHealth,
-        };
-    }
-
-    const officerData = await prisma.user.create({
-      data: {
-        firstName: firstname,
-        lastName: lastname,
-        password: await bcrypt.hash("12345678", 10),
-        role: "PEGAWAI",
-        backTitle: backTitle,
-        birthPlace: birthPlace,
-        bpjsOfEmployment: bpjsOfEmployment,
-        bpjsOfHealth: bpjsOfHealth,
-        cityDistrict: district,
-        dateOfBirth: new Date(dateOfBirth as string),
-        decisionLetterNumber: decisionLetterNumber,
-        email: email,
-        employmentId: nrpt,
-        frontTitle: frontTitle,
-        gender: gender,
-        jobDescription: workDescription,
-        homeAddress: address,
-        latestEducationLevel: latestEducation,
-        maritalStatus: maritalStatus,
-        religion: religion,
-        neighborhood: neighborhood,
-        neighborhoodHead: neighborhoodHead,
-        phoneNumber: phoneNumber,
-        Province: province,
-        startingYear: new Date(),
-        placementLocation: placement,
-        subdistrict: subdistrict,
-        telephone: telephone,
-        username: `${firstname}${new Date().getTime()}`,
-        ward: ward,
-        workGroup: workGroup,
-        workPart: workPart,
-        workUnit: workUnit,
-        familyCertificateNumber: familyCertificateNumber,
-        identityNumber: identityNumber,
-        npwpNumber: npwpNumber,
-        photograph: filesResponse.resMongoPhotograph?._id || null,
-        npwp: filesResponse.resMongoNpFile?._id || null,
-        identity: filesResponse.resMongoIdFile?._id || null,
-        decisionLetter: filesResponse.resMongoDecLetter?._id || null,
-        familyCertificate: filesResponse.resMongoFamCert?._id || null,
-        bpjsOfEmploymentFile: filesResponse.resMongoBpjsEmploy?._id || null,
-        bpjsOfHealthFile: filesResponse.resMongoBpjsHealth?._id || null,
+    const toBeInsertedData = Object.keys(req.body).map((i) => {
+      if (!!req.body[i]) {
+        return (i = req.body[i]);
+      }
+    });
+    const result = await prisma.user.update({
+      where: {
+        id: id as string,
       },
+      data: Object.keys(toBeInsertedData).map((i) => {
+        return i;
+      }),
     });
 
     return res.status(200).json({
       status: "success",
-      message: "successfully created new user",
-      data: officerData,
+      message: "data has been edited",
+      data: result,
     });
-  } catch (error) {
-    console.log(error);
-    return res.status(400).json({
-      status: "failed",
-      message: "something went wrong",
-      data: error,
-    });
-  }
+  } catch (error) {}
 };
 
 export const GETWhoAmI = async (req: Request, res: Response) => {
@@ -2399,6 +2219,12 @@ export const GETEmployeeDetail = async (req: Request, res: Response) => {
         : null,
     };
 
+    Object.keys(result).map((i) => {
+      (result as Data)[i] === "undefined" || (result as Data)[i] == undefined
+        ? ((result as Data)[i] = null)
+        : (result as Data)[i];
+    });
+
     console.log("ini result user data", user);
 
     return res.status(200).json({
@@ -2413,4 +2239,393 @@ export const GETEmployeeDetail = async (req: Request, res: Response) => {
       data: error,
     });
   }
+};
+
+export const POSTCreateUser = async (req: Request, res: Response) => {
+  try {
+    const {
+      address,
+      backTitle,
+      birthPlace,
+      bpjsOfEmployment,
+      bpjsOfHealth,
+      dateOfBirth,
+      decisionLetterNumber,
+      district,
+      email,
+      familyCertificateNumber,
+      firstname,
+      frontTitle,
+      gender,
+      identityNumber,
+      lastname,
+      latestEducation,
+      maritalStatus,
+      neighborhood,
+      neighborhoodHead,
+      npwp,
+      nrpt,
+      phoneNumber,
+      placement,
+      province,
+      religion,
+      startYear,
+      subdistrict,
+      telephone,
+      ward,
+      workDescription,
+      workGroup,
+      workPart,
+      npwpNumber,
+      workUnit,
+    }: {
+      nrpt: string;
+      firstname: string;
+      lastname: string;
+      frontTitle: string;
+      backTitle: string;
+      workGroup: string;
+      workUnit: string;
+      workPart: string;
+      religion: string | null;
+      gender: string | null;
+      latestEducation: string | null;
+      maritalStatus: string | null;
+      workDescription: string | null;
+      placement: string | null;
+      startYear: string;
+      decisionLetterNumber: string | null;
+      neighborhood: string | null;
+      neighborhoodHead: string | null;
+      province: string | null;
+      district: string | null;
+      subdistrict: string | null;
+      ward: string | null;
+      address: string | null;
+      birthPlace: string | null;
+      dateOfBirth: string | Date | null;
+      phoneNumber: string | null;
+      telephone: string | null;
+      email: string | null;
+      familyCertificateNumber: string | null;
+      identityNumber: string | null;
+      npwp: string | null;
+      npwpNumber: string | null;
+      bpjsOfEmployment: string | null;
+      bpjsOfHealth: string | null;
+    } = req.body;
+
+    const {
+      photographFile,
+      familyCertificateFile,
+      bpjsOfEmploymentFile,
+      decisionLetterFile,
+      identityFile,
+      npwpFile,
+      bpjsOfHealthFile,
+    } = req.files as reqFiles;
+    let filesResponse = {
+      resMongoPhotograph: null,
+      resMongoFamCert: null,
+      resMongoBpjsEmploy: null,
+      resMongoDecLetter: null,
+      resMongoIdFile: null,
+      resMongoNpFile: null,
+      resMongoBpjsHealth: null,
+    } as {
+      resMongoPhotograph: null | any;
+      resMongoFamCert: null | any;
+      resMongoBpjsEmploy: null | any;
+      resMongoDecLetter: null | any;
+      resMongoIdFile: null | any;
+      resMongoNpFile: null | any;
+      resMongoBpjsHealth: null | any;
+    };
+
+    switch (true) {
+      case !!photographFile:
+        try {
+          const photograph = photographFile[0];
+          const combinedPhotographChecksum = `${photograph.fieldname}${
+            photograph.originalname
+          }${photograph.size}${photograph.buffer.toString()}`;
+          const checksumPhotograph = createChecksum(combinedPhotographChecksum);
+
+          const photographToSave = new exampleModel({
+            data: {
+              id: new Date().getTime(),
+              file: {
+                ...photograph,
+                checksum: checksumPhotograph,
+              },
+            },
+          });
+
+          const resMongoPhotograph = await photographToSave.save();
+          filesResponse = {
+            ...filesResponse,
+            resMongoPhotograph: resMongoPhotograph,
+          };
+        } catch (error) {}
+      case !!familyCertificateFile:
+        try {
+          const famCert = familyCertificateFile[0];
+          const combinedFamCertCheckum = `${famCert.fieldname}${
+            famCert.originalname
+          }${famCert.size}${famCert.buffer.toString()}`;
+          const checksumFamCert = createChecksum(combinedFamCertCheckum);
+
+          const famCertToSave = new exampleModel({
+            data: {
+              id: new Date().getTime(),
+              file: {
+                ...famCert,
+                checksum: checksumFamCert,
+              },
+            },
+          });
+
+          const resMongoFamCert = await famCertToSave.save();
+          filesResponse = {
+            ...filesResponse,
+            resMongoFamCert: resMongoFamCert,
+          };
+        } catch (error) {}
+      case !!bpjsOfEmploymentFile:
+        try {
+          const bpjsEmploy = bpjsOfEmploymentFile[0];
+          const combinedbpjsEmployCheckum = `${bpjsEmploy.fieldname}${
+            bpjsEmploy.originalname
+          }${bpjsEmploy.size}${bpjsEmploy.buffer.toString()}`;
+          const checksumBpjsEmploy = createChecksum(combinedbpjsEmployCheckum);
+
+          const bpjsEmployToSave = new exampleModel({
+            data: {
+              id: new Date().getTime(),
+              file: {
+                ...bpjsEmploy,
+                checksum: checksumBpjsEmploy,
+              },
+            },
+          });
+
+          const resMongoBpjsEmploy = await bpjsEmployToSave.save();
+          filesResponse = {
+            ...filesResponse,
+            resMongoBpjsEmploy: resMongoBpjsEmploy,
+          };
+        } catch (error) {}
+      case !!decisionLetterFile:
+        try {
+          const decLetter = decisionLetterFile[0];
+          const combinedDecLetterCheckum = `${decLetter.fieldname}${
+            decLetter.originalname
+          }${decLetter.size}${decLetter.buffer.toString()}`;
+          const checksumDecLetter = createChecksum(combinedDecLetterCheckum);
+
+          const decLetterToSave = new exampleModel({
+            data: {
+              id: new Date().getTime(),
+              file: {
+                ...decLetter,
+                checksum: checksumDecLetter,
+              },
+            },
+          });
+
+          const resMongoDecLetter = await decLetterToSave.save();
+          filesResponse = {
+            ...filesResponse,
+            resMongoDecLetter: resMongoDecLetter,
+          };
+        } catch (error) {}
+      case !!identityFile:
+        try {
+          const idFile = identityFile[0];
+          const combinedIdFileCheckum = `${idFile.fieldname}${
+            idFile.originalname
+          }${idFile.size}${idFile.buffer.toString()}`;
+          const checksumIdFile = createChecksum(combinedIdFileCheckum);
+
+          const idFileToSave = new exampleModel({
+            data: {
+              id: new Date().getTime(),
+              file: {
+                ...idFile,
+                checksum: checksumIdFile,
+              },
+            },
+          });
+
+          const resMongoIdFile = await idFileToSave.save();
+          filesResponse = {
+            ...filesResponse,
+            resMongoIdFile: resMongoIdFile,
+          };
+        } catch (error) {}
+      case !!npwpFile:
+        try {
+          const npFile = npwpFile[0];
+          const combinedNpFileCheckum = `${npFile.fieldname}${
+            npFile.originalname
+          }${npFile.size}${npFile.buffer.toString()}`;
+          const checksumNpFile = createChecksum(combinedNpFileCheckum);
+
+          const npFileToSave = new exampleModel({
+            data: {
+              id: new Date().getTime(),
+              file: {
+                ...npFile,
+                checksum: checksumNpFile,
+              },
+            },
+          });
+
+          const resMongoNpFile = await npFileToSave.save();
+          filesResponse = {
+            ...filesResponse,
+            resMongoNpFile: resMongoNpFile,
+          };
+        } catch (error) {}
+      case !!bpjsOfHealthFile:
+        try {
+          const bpjsHealth = bpjsOfHealthFile[0];
+          const combinedbpjsHealthCheckum = `${bpjsHealth.fieldname}${
+            bpjsHealth.originalname
+          }${bpjsHealth.size}${bpjsHealth.buffer.toString()}`;
+          const checksumBpjsHealth = createChecksum(combinedbpjsHealthCheckum);
+
+          const bpjsHealthToSave = new exampleModel({
+            data: {
+              id: new Date().getTime(),
+              file: {
+                ...bpjsHealth,
+                checksum: checksumBpjsHealth,
+              },
+            },
+          });
+
+          const resMongoBpjsHealth = await bpjsHealthToSave.save();
+          filesResponse = {
+            ...filesResponse,
+            resMongoBpjsHealth: resMongoBpjsHealth,
+          };
+        } catch (error) {}
+    }
+
+    const officerData = await prisma.user.create({
+      data: {
+        firstName: firstname,
+        lastName: lastname,
+        password: await bcrypt.hash("12345678", 10),
+        role: "PEGAWAI",
+        backTitle: backTitle,
+        birthPlace: birthPlace,
+        bpjsOfEmployment: bpjsOfEmployment,
+        bpjsOfHealth: bpjsOfHealth,
+        cityDistrict: district,
+        dateOfBirth: new Date(dateOfBirth as string),
+        decisionLetterNumber: decisionLetterNumber,
+        email: email,
+        employmentId: nrpt,
+        frontTitle: frontTitle,
+        gender: gender,
+        jobDescription: workDescription,
+        homeAddress: address,
+        latestEducationLevel: latestEducation,
+        maritalStatus: maritalStatus,
+        religion: religion,
+        neighborhood: neighborhood,
+        neighborhoodHead: neighborhoodHead,
+        phoneNumber: phoneNumber,
+        Province: province,
+        startingYear: startYear,
+        placementLocation: placement,
+        subdistrict: subdistrict,
+        telephone: telephone,
+        username: `${firstname}${new Date().getTime()}`,
+        ward: ward,
+        workGroup: workGroup,
+        workPart: workPart,
+        workUnit: workUnit,
+        familyCertificateNumber: familyCertificateNumber,
+        identityNumber: identityNumber,
+        npwpNumber: npwpNumber,
+        photograph: filesResponse.resMongoPhotograph?._id || null,
+        npwp: filesResponse.resMongoNpFile?._id || null,
+        identity: filesResponse.resMongoIdFile?._id || null,
+        decisionLetter: filesResponse.resMongoDecLetter?._id || null,
+        familyCertificate: filesResponse.resMongoFamCert?._id || null,
+        bpjsOfEmploymentFile: filesResponse.resMongoBpjsEmploy?._id || null,
+        bpjsOfHealthFile: filesResponse.resMongoBpjsHealth?._id || null,
+      },
+    });
+
+    return res.status(200).json({
+      status: "success",
+      message: "successfully created new user",
+      data: officerData,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: "failed",
+      message: "something went wrong",
+      data: error,
+    });
+  }
+};
+
+export const POSTUploadUserDocument = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { file } = req.files as reqFiles;
+  const { fieldToUpdate } = req.body;
+  if (!!file) {
+    try {
+      const currentFile = file[0];
+      const combinedPhotographChecksum = `${currentFile.fieldname}${
+        currentFile.originalname
+      }${currentFile.size}${currentFile.buffer.toString()}`;
+      const checksumPhotograph = createChecksum(combinedPhotographChecksum);
+
+      const photographToSave = new exampleModel({
+        data: {
+          id: new Date().getTime(),
+          file: {
+            ...currentFile,
+            checksum: checksumPhotograph,
+          },
+        },
+      });
+
+      const data: Data = {};
+      data[fieldToUpdate] = photographToSave._id;
+      const result = await prisma.user.update({
+        where: {
+          id: id as string,
+        },
+        data: {
+          ...data,
+        },
+      });
+
+      return res.status(201).json({
+        status: "success",
+        message: `successfully uploaded ${fieldToUpdate} file`,
+        data: result,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(400).json({
+        status: "failed",
+        message: "something went wrong",
+        data: error,
+      });
+    }
+  }
+
+  return res.status(400).json({
+    status: "failed",
+    message: "no file found!",
+  });
 };

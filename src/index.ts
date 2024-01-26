@@ -61,10 +61,12 @@ import {
 } from "./controllers/user/identityController";
 import {
   GETEmployeeDetail,
+  GETRefreshToken,
   GETWhoAmI,
   POSTBulkInsert,
   POSTCheckRole,
   POSTCreateUser,
+  POSTUploadUserDocument,
   POSTUserLogin,
 } from "./controllers/user/userController";
 import { GETAllUserPaginated } from "./controllers/user/userFileUploadController";
@@ -119,6 +121,7 @@ app.get("/", (req: Request, res: Response) => {
 // USER UNGUARDED
 app.post("/api/user/login", POSTUserLogin);
 app.post("/api/user/bulk-insert", POSTBulkInsert);
+app.get("/api/user/refresh", GETRefreshToken);
 // FILE
 app.get("/api/file/:fileId", GETFileById);
 app.get("/api/access", GetAllAccessData);
@@ -225,6 +228,16 @@ app.post(
     },
   ]),
   POSTCreateUser
+);
+app.post(
+  "/api/upload/user/document/:id",
+  upload.fields([
+    {
+      name: "file",
+      maxCount: 1,
+    },
+  ]),
+  POSTUploadUserDocument
 );
 app.get("/api/user/employee", GETAllUserPaginated);
 app.get("/api/user/:id", GETEmployeeDetail);

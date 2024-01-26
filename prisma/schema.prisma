@@ -64,7 +64,7 @@ model User {
   familyCertificateNumber String?
   jobDescription          String?
   placementLocation       String?
-  startingYear            DateTime?
+  startingYear            String?
   decisionLetterNumber    String?
   homeAddress             String?
   neighborhood            String?
