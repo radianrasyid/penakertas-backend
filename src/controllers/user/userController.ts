@@ -1928,7 +1928,10 @@ export const GETWhoAmI = async (req: Request, res: Response) => {
         role: true,
       },
     });
-
+    console.log(
+      "ini file photograph hasil upload baru",
+      await exampleModel.findById(user?.identity)
+    );
     const result = {
       ...user,
       identity: !!user?.identity
@@ -2120,6 +2123,7 @@ export const GETEmployeeDetail = async (req: Request, res: Response) => {
       ...user,
       identity: !!user?.identity
         ? {
+            id: user.identity,
             mimetype: (
               (await exampleModel.findById(user.identity)) as ExampleDocument
             ).data.file.mimetype,
@@ -2131,6 +2135,7 @@ export const GETEmployeeDetail = async (req: Request, res: Response) => {
         : null,
       photograph: !!user?.photograph
         ? {
+            id: user.photograph,
             mimetype: (
               (await exampleModel.findById(user.photograph)) as ExampleDocument
             ).data.file.mimetype,
@@ -2145,6 +2150,7 @@ export const GETEmployeeDetail = async (req: Request, res: Response) => {
         : null,
       familyCertificate: !!user?.familyCertificate
         ? {
+            id: user.familyCertificate,
             mimetype: (
               (await exampleModel.findById(
                 user.familyCertificate
@@ -2161,6 +2167,7 @@ export const GETEmployeeDetail = async (req: Request, res: Response) => {
         : null,
       bpjsOfEmploymentFile: !!user?.bpjsOfEmploymentFile
         ? {
+            id: user.bpjsOfEmploymentFile,
             mimetype: (
               (await exampleModel.findById(
                 user.bpjsOfEmploymentFile
@@ -2177,6 +2184,7 @@ export const GETEmployeeDetail = async (req: Request, res: Response) => {
         : null,
       bpjsOfHealthFile: !!user?.bpjsOfHealthFile
         ? {
+            id: user.bpjsOfHealthFile,
             mimetype: (
               (await exampleModel.findById(
                 user.bpjsOfHealthFile
@@ -2193,6 +2201,7 @@ export const GETEmployeeDetail = async (req: Request, res: Response) => {
         : null,
       npwp: !!user?.npwp
         ? {
+            id: user.npwp,
             mimetype: (
               (await exampleModel.findById(user.npwp)) as ExampleDocument
             ).data.file.mimetype,
@@ -2203,6 +2212,7 @@ export const GETEmployeeDetail = async (req: Request, res: Response) => {
         : null,
       decisionLetter: !!user?.decisionLetter
         ? {
+            id: user.decisionLetter,
             mimetype: (
               (await exampleModel.findById(
                 user.decisionLetter
@@ -2574,58 +2584,4 @@ export const POSTCreateUser = async (req: Request, res: Response) => {
       data: error,
     });
   }
-};
-
-export const POSTUploadUserDocument = async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const { file } = req.files as reqFiles;
-  const { fieldToUpdate } = req.body;
-  if (!!file) {
-    try {
-      const currentFile = file[0];
-      const combinedPhotographChecksum = `${currentFile.fieldname}${
-        currentFile.originalname
-      }${currentFile.size}${currentFile.buffer.toString()}`;
-      const checksumPhotograph = createChecksum(combinedPhotographChecksum);
-
-      const photographToSave = new exampleModel({
-        data: {
-          id: new Date().getTime(),
-          file: {
-            ...currentFile,
-            checksum: checksumPhotograph,
-          },
-        },
-      });
-
-      const data: Data = {};
-      data[fieldToUpdate] = photographToSave._id;
-      const result = await prisma.user.update({
-        where: {
-          id: id as string,
-        },
-        data: {
-          ...data,
-        },
-      });
-
-      return res.status(201).json({
-        status: "success",
-        message: `successfully uploaded ${fieldToUpdate} file`,
-        data: result,
-      });
-    } catch (error) {
-      console.log(error);
-      return res.status(400).json({
-        status: "failed",
-        message: "something went wrong",
-        data: error,
-      });
-    }
-  }
-
-  return res.status(400).json({
-    status: "failed",
-    message: "no file found!",
-  });
 };

@@ -1,5 +1,12 @@
 import { Request, Response } from "express";
-import ExampleModel, { ExampleDocument } from "../../../prisma/mongooseModel"; // Replace with the actual path
+import {
+  ExampleDocument,
+  default as ExampleModel,
+  default as exampleModel,
+} from "../../../prisma/mongooseModel"; // Replace with the actual path
+import prisma from "../../../prisma/prisma";
+import { createChecksum } from "../../lib/processors";
+import { Data, reqFiles } from "../../lib/types/general";
 
 export const GETFileById = async (req: Request, res: Response) => {
   const fileId = req.params.fileId;
@@ -23,4 +30,62 @@ export const GETFileById = async (req: Request, res: Response) => {
     console.error(error);
     res.status(500).send("Internal Server Error");
   }
+};
+
+export const POSTUploadUserDocument = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { file } = req.files as reqFiles;
+  const { fieldToUpdate } = req.body;
+  if (!!file) {
+    try {
+      const currentFile = file[0];
+      const combinedPhotographChecksum = `${currentFile.fieldname}${
+        currentFile.originalname
+      }${currentFile.size}${currentFile.buffer.toString()}`;
+      const checksumPhotograph = createChecksum(combinedPhotographChecksum);
+
+      const photographToSave = new exampleModel({
+        data: {
+          id: new Date().getTime(),
+          file: {
+            ...currentFile,
+            checksum: checksumPhotograph,
+          },
+        },
+      });
+
+      await photographToSave.save();
+      const data: Data = {};
+      data[fieldToUpdate] = photographToSave._id;
+      await prisma.user.update({
+        where: {
+          id: id as string,
+        },
+        data: {
+          ...data,
+        },
+      });
+      return res.status(201).json({
+        status: "success",
+        message: `successfully uploaded ${fieldToUpdate} file`,
+        data: {
+          id: photographToSave._id,
+          mimetype: photographToSave.data.file.mimetype,
+          link: `http://localhost:52000/api/file/${photographToSave._id}`,
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(400).json({
+        status: "failed",
+        message: "something went wrong",
+        data: error,
+      });
+    }
+  }
+
+  return res.status(400).json({
+    status: "failed",
+    message: "no file found!",
+  });
 };

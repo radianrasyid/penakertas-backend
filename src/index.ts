@@ -8,7 +8,10 @@ import {
   GetAllAccessData,
   PUTUpdateData,
 } from "./controllers/accessController/accessController";
-import { GETFileById } from "./controllers/file/fileController";
+import {
+  GETFileById,
+  POSTUploadUserDocument,
+} from "./controllers/file/fileController";
 import {
   DELETEDistrict,
   GETAllDistrict,
@@ -63,10 +66,10 @@ import {
   GETEmployeeDetail,
   GETRefreshToken,
   GETWhoAmI,
+  PATCHUserData,
   POSTBulkInsert,
   POSTCheckRole,
   POSTCreateUser,
-  POSTUploadUserDocument,
   POSTUserLogin,
 } from "./controllers/user/userController";
 import { GETAllUserPaginated } from "./controllers/user/userFileUploadController";
@@ -239,6 +242,7 @@ app.post(
   ]),
   POSTUploadUserDocument
 );
+app.patch("/api/user/:id", PATCHUserData);
 app.get("/api/user/employee", GETAllUserPaginated);
 app.get("/api/user/:id", GETEmployeeDetail);
 
