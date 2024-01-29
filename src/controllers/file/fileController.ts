@@ -24,6 +24,7 @@ export const GETFileById = async (req: Request, res: Response) => {
     res.setHeader("Content-Type", file.data.file.mimetype as string);
     res.setHeader("Content-Disposition", `inline; filename="${filename}"`);
     res.setHeader("Cache-Control", "public, max-age=0"); // Optional: Disable caching
+    res.setHeader("ngrok-skip-browser-warning", "shit");
 
     res.end(file.data.file.buffer);
   } catch (error) {

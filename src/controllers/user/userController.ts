@@ -1846,26 +1846,32 @@ export const PATCHUserData = async (req: Request, res: Response) => {
       workPart,
       workUnit,
     } = req.body;
-    const toBeInsertedData = Object.keys(req.body).map((i) => {
-      if (!!req.body[i]) {
-        return (i = req.body[i]);
-      }
+    const duplicatedReqBody: Data = { ...req.body };
+    console.log("ini data yang masuk ke dalam cok", {
+      duplicatedReqBody,
+      id,
     });
     const result = await prisma.user.update({
       where: {
-        id: id as string,
+        employmentId: id,
       },
-      data: Object.keys(toBeInsertedData).map((i) => {
-        return i;
-      }),
+      data: {
+        ...duplicatedReqBody,
+      },
     });
-
     return res.status(200).json({
       status: "success",
       message: "data has been edited",
       data: result,
     });
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: "failed",
+      message: "something went wrong",
+      data: error,
+    });
+  }
 };
 
 export const GETWhoAmI = async (req: Request, res: Response) => {

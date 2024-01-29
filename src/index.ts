@@ -108,7 +108,7 @@ import {
 import { upload } from "./lib/processors";
 
 const app = express();
-app.use(cors({ origin: "*" }));
+app.use(cors());
 const PORT = 52000;
 const HOST = "localhost";
 
