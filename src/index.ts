@@ -48,6 +48,7 @@ import { AuthMiddleware } from "./controllers/middleware/authMiddleware";
 import { GETEmployeeStatistic } from "./controllers/statistic/statisticController";
 import {
   DELETELatestEducation,
+  DELETEPartner,
   DELETEReligion,
   GETLatestEducationById,
   GETLatestEducationPaginate,
@@ -57,6 +58,7 @@ import {
   GETListReligion,
   GETReligionById,
   GETReligionPaginate,
+  POSTAddPartner,
   POSTCreateLatestEducation,
   POSTCreateReligion,
   PUTEditLatestEducation,
@@ -268,6 +270,10 @@ app.delete("/api/work/unit/:id", DELETEWorkUnit);
 app.get("/api/work/unit", GETListWorkUnit);
 app.get("/api/work/unit/:id", GETWorkUnitById);
 app.get("/api/work/unit-paginate", GETWorkUnitPaginated);
+
+// RElATIONSHIP
+app.post("/api/relationship", POSTAddPartner);
+app.delete("/api/relationship/:id", DELETEPartner);
 
 app.listen(PORT, HOST, () => {
   console.log(`server is running on http://${HOST}:${PORT}`);

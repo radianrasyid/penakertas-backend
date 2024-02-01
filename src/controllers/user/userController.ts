@@ -12,6 +12,7 @@ import { Data, reqFiles } from "../../lib/types/general";
 export const POSTUserLogin = async (req: Request, res: Response) => {
   try {
     const { username, password } = req.body;
+    console.log("ini req body", req.body);
 
     const user = await prisma.user.findFirst({
       where: {
@@ -52,6 +53,7 @@ export const POSTUserLogin = async (req: Request, res: Response) => {
           : null,
         role: user?.role,
         expire: new Date().getTime() + 5000,
+        nipp: user.employmentId,
         access: await userAccess.findOne({ "data.title": user?.role }),
       },
       process.env.JWT_SECRET_KEY as string

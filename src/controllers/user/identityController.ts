@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import prisma from "../../../prisma/prisma";
+import { Data } from "../../lib/types/general";
 
 export const GETListReligion = async (req: Request, res: Response) => {
   try {
@@ -436,6 +437,102 @@ export const DELETEReligion = async (req: Request, res: Response) => {
     return res.status(400).json({
       status: "failed",
       message: "delete data failed",
+      data: error,
+    });
+  }
+};
+
+export const DELETEPartner = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const result = await prisma.relationship.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    return res.status(200).json({
+      status: "success",
+      message: "delete relationship success",
+      data: result,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: "failed",
+      message: "something went wrong",
+      data: error,
+    });
+  }
+};
+
+export const POSTAddPartner = async (req: Request, res: Response) => {
+  const user = (req as any).user;
+  try {
+    const body = req.body as {
+      partnerData: {
+        id: string;
+        fullname: string;
+        status: string;
+        profession: string;
+        phoneNumber: string;
+      }[];
+    };
+
+    const currentUser = await prisma.user.findUnique({
+      where: {
+        employmentId: user.nipp,
+      },
+      include: {
+        relationships: {
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
+      },
+    });
+    let resultData: any[] = [];
+    body.partnerData.map(async (e) => {
+      const isThereAny = currentUser?.relationships.find(
+        (test) => test.id === e.id
+      );
+      if (!!isThereAny) {
+        const newObj = Object.keys(isThereAny).reduce((acc, key) => {
+          acc[key] = (e as Data)[key];
+          return acc;
+        }, {} as { [key: string]: any });
+        const result = await prisma.relationship.update({
+          where: {
+            id: isThereAny.id,
+          },
+          data: newObj,
+        });
+        resultData.push(result);
+        return;
+      }
+      const result = await prisma.relationship.create({
+        data: {
+          fullname: e.fullname,
+          phoneNumber: e.phoneNumber,
+          profession: e.profession,
+          status: e.status,
+          personRelatedId: currentUser?.id as string,
+        },
+      });
+      resultData.push(result);
+      return;
+    });
+
+    return res.status(200).json({
+      status: "success",
+      message: "add relationship success",
+      data: resultData,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: "failed",
+      message: "add relationship failed",
       data: error,
     });
   }

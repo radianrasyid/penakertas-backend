@@ -258,20 +258,20 @@ model ChildFile {
 }
 
 model Relationship {
-  id                  String        @id @default(cuid())
-  firstName           String
-  lastName            String
-  status              maritalStatus
+  id                  String   @id @default(cuid())
+  fullname            String
+  status              String
   phoneNumber         String
-  photograph          String
-  identityCard        String
-  bpjsOfEmployment    String
-  bpjsOfHealth        String
-  marriageCertificate String
-  relation            User          @relation(fields: [personRelatedId], references: [id])
+  profession          String
+  photograph          String?
+  identityCard        String?
+  bpjsOfEmployment    String?
+  bpjsOfHealth        String?
+  marriageCertificate String?
+  relation            User     @relation(fields: [personRelatedId], references: [id])
   personRelatedId     String
-  createdAt           DateTime      @default(now()) @db.Timestamptz(6)
-  updatedAt           DateTime      @updatedAt @db.Timestamptz(6)
+  createdAt           DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt           DateTime @updatedAt @db.Timestamptz(6)
 }
 
 model EducationFile {
