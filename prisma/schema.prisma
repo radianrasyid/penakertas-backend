@@ -44,9 +44,11 @@ model User {
   role                    userRole
   createdAt               DateTime       @default(now()) @map(name: "created_at")
   updatedAt               DateTime       @updatedAt @map(name: "updated_at")
-  leaves                  UserLeave[]
+  leaves                  Leave[]
   childs                  Child[]
   relationships           Relationship[]
+  educations              Education[]
+  parents                 Parent[]
   identity                String?
   photograph              String?
   familyCertificate       String?
@@ -194,28 +196,17 @@ model LeaveFile {
 }
 
 model Leave {
-  id          String      @id @default(cuid())
-  skNumber    String
-  skDate      DateTime
-  startDate   DateTime
-  endDate     DateTime
-  leaveType   String
-  description String?
-  users       UserLeave[]
-  createdAt   DateTime    @default(now()) @db.Timestamptz(6)
-  updatedAt   DateTime    @updatedAt @db.Timestamptz(6)
-}
-
-model UserLeave {
-  id        String   @id @default(cuid())
-  user      User     @relation(fields: [userId], references: [id])
-  leave     Leave    @relation(fields: [leaveId], references: [id])
-  userId    String
-  leaveId   String
-  createdAt DateTime @default(now()) @db.Timestamptz(6)
-  updatedAt DateTime @updatedAt @db.Timestamptz(6)
-
-  @@unique([userId, leaveId])
+  id              String   @id @default(cuid())
+  skNumber        String
+  skDate          DateTime
+  startDate       DateTime
+  endDate         DateTime
+  leaveType       String
+  description     String?
+  relation        User     @relation(fields: [personRelatedId], references: [id])
+  personRelatedId String
+  createdAt       DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime @updatedAt @db.Timestamptz(6)
 }
 
 model ChildActivity {
@@ -230,7 +221,7 @@ model Child {
   id         String      @id @default(cuid())
   name       String
   childOrder Int
-  activity   String
+  activity   String?
   status     String
   parent     User        @relation(fields: [parentId], references: [id])
   parentId   String
@@ -285,25 +276,28 @@ model EducationFile {
 }
 
 model Education {
-  id             String          @id @default(cuid())
-  educationPlace String
-  educationLevel String
-  address        String
-  major          String
-  graduationYear DateTime
-  files          EducationFile[]
-  createdAt      DateTime        @default(now()) @db.Timestamptz(6)
-  updatedAt      DateTime        @updatedAt @db.Timestamptz(6)
+  id              String          @id @default(cuid())
+  educationPlace  String
+  educationLevel  String
+  address         String
+  major           String
+  graduationYear  DateTime
+  files           EducationFile[]
+  relation        User            @relation(fields: [personRelatedId], references: [id])
+  personRelatedId String
+  createdAt       DateTime        @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime        @updatedAt @db.Timestamptz(6)
 }
 
 model Parent {
-  id         String   @id @default(cuid())
-  firstName  String
-  lastName   String
-  status     String
-  profession String
-  createdAt  DateTime @default(now()) @db.Timestamptz(6)
-  updatedAt  DateTime @updatedAt @db.Timestamptz(6)
+  id              String   @id @default(cuid())
+  fullname        String
+  status          String
+  profession      String
+  relation        User     @relation(fields: [personRelatedId], references: [id])
+  personRelatedId String
+  createdAt       DateTime @default(now()) @db.Timestamptz(6)
+  updatedAt       DateTime @updatedAt @db.Timestamptz(6)
 }
 
 model Profession {

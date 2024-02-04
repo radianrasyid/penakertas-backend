@@ -516,7 +516,400 @@ export const POSTAddPartner = async (req: Request, res: Response) => {
           phoneNumber: e.phoneNumber,
           profession: e.profession,
           status: e.status,
-          personRelatedId: currentUser?.id as string,
+          relation: {
+            connect: user.id,
+          },
+        },
+      });
+      resultData.push(result);
+      return;
+    });
+
+    return res.status(200).json({
+      status: "success",
+      message: "add relationship success",
+      data: resultData,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: "failed",
+      message: "add relationship failed",
+      data: error,
+    });
+  }
+};
+
+export const DELETEEducation = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const result = await prisma.education.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    return res.status(200).json({
+      status: "success",
+      message: "delete education success",
+      data: result,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: "failed",
+      message: "delete education failed",
+      data: error,
+    });
+  }
+};
+
+export const POSTAddEducation = async (req: Request, res: Response) => {
+  const user = (req as any).user;
+  try {
+    const body = req.body as {
+      educationData: {
+        id: string;
+        no: number;
+        educationPlace: string;
+        educationLevel: string;
+        address: string;
+        major: string;
+        graduationYear: string;
+        aksi: null | string;
+      }[];
+    };
+
+    const currentUser = await prisma.user.findUnique({
+      where: {
+        employmentId: user.nipp,
+      },
+      include: {
+        educations: {
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
+      },
+    });
+    let resultData: any[] = [];
+    body.educationData.map(async (e) => {
+      const isThereAny = currentUser?.educations.find(
+        (test) => test.id === e.id
+      );
+      if (!!isThereAny) {
+        const newObj = Object.keys(isThereAny).reduce((acc, key) => {
+          acc[key] = (e as Data)[key];
+          return acc;
+        }, {} as { [key: string]: any });
+        const result = await prisma.education.update({
+          where: {
+            id: isThereAny.id,
+          },
+          data: newObj,
+        });
+        resultData.push(result);
+        return;
+      }
+      const result = await prisma.education.create({
+        data: {
+          address: e.address,
+          educationLevel: e.educationLevel,
+          educationPlace: e.educationPlace,
+          graduationYear: e.graduationYear,
+          major: e.major,
+          relation: {
+            connect: user.id,
+          },
+        },
+      });
+      resultData.push(result);
+      return;
+    });
+
+    return res.status(200).json({
+      status: "success",
+      message: "add relationship success",
+      data: resultData,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: "failed",
+      message: "add relationship failed",
+      data: error,
+    });
+  }
+};
+
+export const DELETEChild = async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  try {
+    const result = await prisma.child.delete({
+      where: {
+        id: id,
+      },
+    });
+    return res.status(200).json({
+      status: "success",
+      message: "delete child success",
+      data: result,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: "failed",
+      message: "delete child failed",
+      data: error,
+    });
+  }
+};
+
+export const POSTAddChild = async (req: Request, res: Response) => {
+  const user = (req as any).user;
+  try {
+    const body = req.body as {
+      childData: {
+        id: string;
+        no: number;
+        fullname: string;
+        status: string;
+        childOrder: string | number;
+        aksi: null | string;
+      }[];
+    };
+
+    const currentUser = await prisma.user.findUnique({
+      where: {
+        employmentId: user.nipp,
+      },
+      include: {
+        childs: {
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
+      },
+    });
+    let resultData: any[] = [];
+    body.childData.map(async (e) => {
+      const isThereAny = currentUser?.childs.find((test) => test.id === e.id);
+      if (!!isThereAny) {
+        const newObj = Object.keys(isThereAny).reduce((acc, key) => {
+          acc[key] = (e as Data)[key];
+          return acc;
+        }, {} as { [key: string]: any });
+        const result = await prisma.child.update({
+          where: {
+            id: isThereAny.id,
+          },
+          data: newObj,
+        });
+        resultData.push(result);
+        return;
+      }
+      const result = await prisma.child.create({
+        data: {
+          childOrder: Number(e.childOrder),
+          name: e.fullname,
+          status: e.status,
+          parent: {
+            connect: user.id,
+          },
+        },
+      });
+      resultData.push(result);
+      return;
+    });
+
+    return res.status(200).json({
+      status: "success",
+      message: "add relationship success",
+      data: resultData,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: "failed",
+      message: "add relationship failed",
+      data: error,
+    });
+  }
+};
+
+export const DELETEParent = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const result = await prisma.parent.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    return res.status(200).json({
+      status: "success",
+      message: "delete parent success",
+      data: result,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: "failed",
+      message: "delete parent failed",
+      data: error,
+    });
+  }
+};
+
+export const POSTAddParent = async (req: Request, res: Response) => {
+  const user = (req as any).user;
+  try {
+    const body = req.body as {
+      parentData: {
+        id: string;
+        no: number;
+        fullname: string;
+        status: string;
+        profession: string;
+        aksi: null | string;
+      }[];
+    };
+
+    const currentUser = await prisma.user.findUnique({
+      where: {
+        employmentId: user.nipp,
+      },
+      include: {
+        parents: {
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
+      },
+    });
+    let resultData: any[] = [];
+    body.parentData.map(async (e) => {
+      const isThereAny = currentUser?.parents.find((test) => test.id === e.id);
+      if (!!isThereAny) {
+        const newObj = Object.keys(isThereAny).reduce((acc, key) => {
+          acc[key] = (e as Data)[key];
+          return acc;
+        }, {} as { [key: string]: any });
+        const result = await prisma.parent.update({
+          where: {
+            id: isThereAny.id,
+          },
+          data: newObj,
+        });
+        resultData.push(result);
+        return;
+      }
+      const result = await prisma.parent.create({
+        data: {
+          fullname: e.fullname,
+          profession: e.profession,
+          status: e.status,
+          relation: {
+            connect: user.id,
+          },
+        },
+      });
+      resultData.push(result);
+      return;
+    });
+
+    return res.status(200).json({
+      status: "success",
+      message: "add relationship success",
+      data: resultData,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: "failed",
+      message: "add relationship failed",
+      data: error,
+    });
+  }
+};
+
+export const DELETELeave = async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const result = await prisma.leave.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    return res.status(200).json({
+      status: "success",
+      message: "delete leave success",
+      data: result,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: "failed",
+      message: "delete leave failed",
+      data: error,
+    });
+  }
+};
+
+export const POSTAddLeave = async (req: Request, res: Response) => {
+  const user = (req as any).user;
+  try {
+    const body = req.body as {
+      leaveData: {
+        id: string;
+        no: number;
+        skNumber: string;
+        skDate: string | Date;
+        startDate: string | Date;
+        leaveType: string;
+        endDate: string | Date;
+        aksi: null | string;
+      }[];
+    };
+
+    const currentUser = await prisma.user.findUnique({
+      where: {
+        employmentId: user.nipp,
+      },
+      include: {
+        leaves: {
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
+      },
+    });
+    let resultData: any[] = [];
+    body.leaveData.map(async (e) => {
+      const isThereAny = currentUser?.leaves.find((test) => test.id === e.id);
+      if (!!isThereAny) {
+        const newObj = Object.keys(isThereAny).reduce((acc, key) => {
+          acc[key] = (e as Data)[key];
+          return acc;
+        }, {} as { [key: string]: any });
+        const result = await prisma.leave.update({
+          where: {
+            id: isThereAny.id,
+          },
+          data: newObj,
+        });
+        resultData.push(result);
+        return;
+      }
+      const result = await prisma.leave.create({
+        data: {
+          endDate: e.endDate,
+          leaveType: e.leaveType,
+          skDate: e.skDate,
+          skNumber: e.skNumber,
+          startDate: e.startDate,
         },
       });
       resultData.push(result);
