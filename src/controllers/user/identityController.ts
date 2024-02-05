@@ -481,7 +481,7 @@ export const POSTAddPartner = async (req: Request, res: Response) => {
 
     const currentUser = await prisma.user.findUnique({
       where: {
-        employmentId: user.nipp,
+        id: user.id,
       },
       include: {
         relationships: {
@@ -490,6 +490,10 @@ export const POSTAddPartner = async (req: Request, res: Response) => {
           },
         },
       },
+    });
+    console.log("ini data", {
+      reqUser: user.id,
+      currentUser: currentUser?.id,
     });
     let resultData: any[] = [];
     body.partnerData.map(async (e) => {
@@ -517,7 +521,9 @@ export const POSTAddPartner = async (req: Request, res: Response) => {
           profession: e.profession,
           status: e.status,
           relation: {
-            connect: user.id,
+            connect: {
+              id: currentUser?.id,
+            },
           },
         },
       });
@@ -619,7 +625,9 @@ export const POSTAddEducation = async (req: Request, res: Response) => {
           graduationYear: e.graduationYear,
           major: e.major,
           relation: {
-            connect: user.id,
+            connect: {
+              id: currentUser?.id,
+            },
           },
         },
       });
@@ -673,12 +681,14 @@ export const POSTAddChild = async (req: Request, res: Response) => {
       childData: {
         id: string;
         no: number;
-        fullname: string;
+        name: string;
         status: string;
         childOrder: string | number;
         aksi: null | string;
       }[];
     };
+
+    console.log("TESTING BOS", req.body);
 
     const currentUser = await prisma.user.findUnique({
       where: {
@@ -698,6 +708,9 @@ export const POSTAddChild = async (req: Request, res: Response) => {
       if (!!isThereAny) {
         const newObj = Object.keys(isThereAny).reduce((acc, key) => {
           acc[key] = (e as Data)[key];
+          if (key === "childOrder") {
+            acc[key] = Number((e as Data)[key]);
+          }
           return acc;
         }, {} as { [key: string]: any });
         const result = await prisma.child.update({
@@ -712,10 +725,12 @@ export const POSTAddChild = async (req: Request, res: Response) => {
       const result = await prisma.child.create({
         data: {
           childOrder: Number(e.childOrder),
-          name: e.fullname,
+          name: e.name,
           status: e.status,
           parent: {
-            connect: user.id,
+            connect: {
+              id: currentUser?.id,
+            },
           },
         },
       });
@@ -811,7 +826,9 @@ export const POSTAddParent = async (req: Request, res: Response) => {
           profession: e.profession,
           status: e.status,
           relation: {
-            connect: user.id,
+            connect: {
+              id: currentUser?.id,
+            },
           },
         },
       });
@@ -910,6 +927,11 @@ export const POSTAddLeave = async (req: Request, res: Response) => {
           skDate: e.skDate,
           skNumber: e.skNumber,
           startDate: e.startDate,
+          relation: {
+            connect: {
+              id: currentUser?.id,
+            },
+          },
         },
       });
       resultData.push(result);
@@ -926,6 +948,25 @@ export const POSTAddLeave = async (req: Request, res: Response) => {
     return res.status(400).json({
       status: "failed",
       message: "add relationship failed",
+      data: error,
+    });
+  }
+};
+
+export const GETChildStatusList = async (req: Request, res: Response) => {
+  try {
+    const result = await prisma.childStatus.findMany();
+
+    return res.status(200).json({
+      status: "success",
+      message: "retreive data success",
+      data: result,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      status: "failed",
+      message: "retreive data failed",
       data: error,
     });
   }

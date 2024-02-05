@@ -1,30 +1,11 @@
-// schema.prisma
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider  = "postgresql"
-  url       = env("POSTGRES_PRISMA_URL") // uses connection pooling
-  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
-}
-
-enum userRole {
-  ADMIN
-  ROOT
-  PEGAWAI
-}
-
-enum maritalStatus {
-  SINGLE
-  MARRIED
-  DIVORCED
-}
-
-enum userGender {
-  MALE
-  FEMALE
+  url       = env("POSTGRES_PRISMA_URL")
+  directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
 model User {
@@ -42,13 +23,8 @@ model User {
   workPart                String?
   gender                  String?
   role                    userRole
-  createdAt               DateTime       @default(now()) @map(name: "created_at")
-  updatedAt               DateTime       @updatedAt @map(name: "updated_at")
-  leaves                  Leave[]
-  childs                  Child[]
-  relationships           Relationship[]
-  educations              Education[]
-  parents                 Parent[]
+  createdAt               DateTime       @default(now()) @map("created_at")
+  updatedAt               DateTime       @updatedAt @map("updated_at")
   identity                String?
   photograph              String?
   familyCertificate       String?
@@ -79,8 +55,13 @@ model User {
   dateOfBirth             DateTime?
   phoneNumber             String?
   telephone               String?
+  childs                  Child[]
+  educations              Education[]
+  leaves                  Leave[]
+  parents                 Parent[]
+  relationships           Relationship[]
 
-  @@map(name: "users")
+  @@map("users")
 }
 
 model Gender {
@@ -104,9 +85,9 @@ model WorkGroup {
   id        String     @id @default(cuid())
   name      String     @unique
   value     String
-  workUnits WorkUnit[]
   createdAt DateTime   @default(now()) @db.Timestamptz(6)
   updatedAt DateTime   @updatedAt @db.Timestamptz(6)
+  workUnits WorkUnit[]
 }
 
 model WorkUnit {
@@ -114,10 +95,10 @@ model WorkUnit {
   name          String
   value         String
   workGroupName String?
-  workGroup     WorkGroup? @relation(fields: [workGroupName], references: [name])
-  workParts     WorkPart[]
   createdAt     DateTime   @default(now()) @db.Timestamptz(6)
   updatedAt     DateTime   @updatedAt @db.Timestamptz(6)
+  workParts     WorkPart[]
+  workGroup     WorkGroup? @relation(fields: [workGroupName], references: [name])
 }
 
 model WorkPart {
@@ -125,9 +106,9 @@ model WorkPart {
   name         String
   value        String
   workUnitName String?
-  workUnit     WorkUnit? @relation(fields: [workUnitName], references: [id])
   createdAt    DateTime  @default(now()) @db.Timestamptz(6)
   updatedAt    DateTime  @updatedAt @db.Timestamptz(6)
+  workUnit     WorkUnit? @relation(fields: [workUnitName], references: [id])
 }
 
 model Religion {
@@ -142,9 +123,9 @@ model Province {
   id              String         @id @default(cuid())
   name            String         @unique
   value           String
-  CitiesDistricts CityDistrict[]
   createdAt       DateTime       @default(now()) @db.Timestamptz(6)
   updatedAt       DateTime       @updatedAt @db.Timestamptz(6)
+  CitiesDistricts CityDistrict[]
 }
 
 model CityDistrict {
@@ -152,10 +133,10 @@ model CityDistrict {
   name         String
   value        String
   provinceId   String
-  province     Province      @relation(fields: [provinceId], references: [id], onDelete: Cascade)
-  subdistricts Subdistrict[]
   createdAt    DateTime      @default(now()) @db.Timestamptz(6)
   updatedAt    DateTime      @updatedAt @db.Timestamptz(6)
+  province     Province      @relation(fields: [provinceId], references: [id], onDelete: Cascade)
+  subdistricts Subdistrict[]
 }
 
 model Subdistrict {
@@ -163,10 +144,10 @@ model Subdistrict {
   name           String
   value          String
   cityDistrictId String
-  cityDistricts  CityDistrict @relation(fields: [cityDistrictId], references: [id], onDelete: Cascade)
-  wards          Ward[]
   createdAt      DateTime     @default(now()) @db.Timestamptz(6)
   updatedAt      DateTime     @updatedAt @db.Timestamptz(6)
+  cityDistricts  CityDistrict @relation(fields: [cityDistrictId], references: [id], onDelete: Cascade)
+  wards          Ward[]
 }
 
 model Ward {
@@ -174,9 +155,9 @@ model Ward {
   name          String
   value         String
   subdistrictId String
-  subdistrict   Subdistrict @relation(fields: [subdistrictId], references: [id], onDelete: Cascade)
   createdAt     DateTime    @default(now()) @db.Timestamptz(6)
   updatedAt     DateTime    @updatedAt @db.Timestamptz(6)
+  subdistrict   Subdistrict @relation(fields: [subdistrictId], references: [id], onDelete: Cascade)
 }
 
 model LeaveType {
@@ -203,10 +184,10 @@ model Leave {
   endDate         DateTime
   leaveType       String
   description     String?
-  relation        User     @relation(fields: [personRelatedId], references: [id])
   personRelatedId String
   createdAt       DateTime @default(now()) @db.Timestamptz(6)
   updatedAt       DateTime @updatedAt @db.Timestamptz(6)
+  relation        User     @relation(fields: [personRelatedId], references: [id])
 }
 
 model ChildActivity {
@@ -223,11 +204,11 @@ model Child {
   childOrder Int
   activity   String?
   status     String
-  parent     User        @relation(fields: [parentId], references: [id])
   parentId   String
-  files      ChildFile[]
   createdAt  DateTime    @default(now()) @db.Timestamptz(6)
   updatedAt  DateTime    @updatedAt @db.Timestamptz(6)
+  parent     User        @relation(fields: [parentId], references: [id])
+  files      ChildFile[]
 }
 
 model ChildStatus {
@@ -242,10 +223,10 @@ model ChildFile {
   id        String   @id @default(cuid())
   name      String
   value     String
-  child     Child    @relation(fields: [childId], references: [id])
   childId   String
   createdAt DateTime @default(now()) @db.Timestamptz(6)
   updatedAt DateTime @updatedAt @db.Timestamptz(6)
+  child     Child    @relation(fields: [childId], references: [id])
 }
 
 model Relationship {
@@ -259,20 +240,20 @@ model Relationship {
   bpjsOfEmployment    String?
   bpjsOfHealth        String?
   marriageCertificate String?
-  relation            User     @relation(fields: [personRelatedId], references: [id])
   personRelatedId     String
   createdAt           DateTime @default(now()) @db.Timestamptz(6)
   updatedAt           DateTime @updatedAt @db.Timestamptz(6)
+  relation            User     @relation(fields: [personRelatedId], references: [id])
 }
 
 model EducationFile {
   id          String    @id @default(cuid())
   name        String
   value       String
-  education   Education @relation(fields: [educationId], references: [id])
   educationId String
   createdAt   DateTime  @default(now()) @db.Timestamptz(6)
   updatedAt   DateTime  @updatedAt @db.Timestamptz(6)
+  education   Education @relation(fields: [educationId], references: [id])
 }
 
 model Education {
@@ -282,11 +263,11 @@ model Education {
   address         String
   major           String
   graduationYear  DateTime
-  files           EducationFile[]
-  relation        User            @relation(fields: [personRelatedId], references: [id])
   personRelatedId String
   createdAt       DateTime        @default(now()) @db.Timestamptz(6)
   updatedAt       DateTime        @updatedAt @db.Timestamptz(6)
+  relation        User            @relation(fields: [personRelatedId], references: [id])
+  files           EducationFile[]
 }
 
 model Parent {
@@ -294,10 +275,10 @@ model Parent {
   fullname        String
   status          String
   profession      String
-  relation        User     @relation(fields: [personRelatedId], references: [id])
   personRelatedId String
   createdAt       DateTime @default(now()) @db.Timestamptz(6)
   updatedAt       DateTime @updatedAt @db.Timestamptz(6)
+  relation        User     @relation(fields: [personRelatedId], references: [id])
 }
 
 model Profession {
@@ -355,4 +336,21 @@ model ChildSupport {
   value     String
   createdAt DateTime @default(now()) @db.Timestamptz(6)
   updatedAt DateTime @updatedAt @db.Timestamptz(6)
+}
+
+enum userRole {
+  ADMIN
+  ROOT
+  PEGAWAI
+}
+
+enum maritalStatus {
+  SINGLE
+  MARRIED
+  DIVORCED
+}
+
+enum userGender {
+  MALE
+  FEMALE
 }

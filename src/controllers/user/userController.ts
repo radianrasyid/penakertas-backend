@@ -2085,6 +2085,8 @@ export const GETEmployeeDetail = async (req: Request, res: Response) => {
         firstName: true,
         lastName: true,
         frontTitle: true,
+        educations: true,
+        parents: true,
         backTitle: true,
         workGroup: true,
         workUnit: true,
@@ -2243,7 +2245,7 @@ export const GETEmployeeDetail = async (req: Request, res: Response) => {
         : (result as Data)[i];
     });
 
-    console.log("ini result user data", user);
+    // console.log("ini result user data", user);
 
     return res.status(200).json({
       status: "success",

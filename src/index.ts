@@ -54,6 +54,7 @@ import {
   DELETEParent,
   DELETEPartner,
   DELETEReligion,
+  GETChildStatusList,
   GETLatestEducationById,
   GETLatestEducationPaginate,
   GETListGender,
@@ -103,6 +104,7 @@ import {
   GETWorkUnitPaginated,
   POSTCreateWorkUnit,
 } from "./controllers/userIdentity/workUnitController";
+import { GETAllLeaveType } from "./controllers/userInfo/leaveTypeController";
 import {
   DELETEMaritalStatus,
   GETMaritalStatusById,
@@ -110,6 +112,7 @@ import {
   POSTCreateMaritalStatus,
   PUTEditMaritalStatus,
 } from "./controllers/userInfo/maritalStatusController";
+import { GETAllParentStatus } from "./controllers/userInfo/parentStatusController";
 import {
   GETListWorkGroup,
   GETListWorkPart,
@@ -290,12 +293,15 @@ app.delete("/api/education-data/:id", DELETEEducation);
 // CHILD
 app.post("/api/child", POSTAddChild);
 app.delete("/api/child/:id", DELETEChild);
+app.get("/api/child-status", GETChildStatusList);
 
 // PARENT
+app.get("/api/parent", GETAllParentStatus);
 app.post("/api/parent", POSTAddParent);
 app.delete("/api/child/:id", DELETEParent);
 
 // LEAVE
+app.get("/api/leave-type", GETAllLeaveType);
 app.post("/api/leave", POSTAddLeave);
 app.delete("/api/leave/:id", DELETELeave);
 
