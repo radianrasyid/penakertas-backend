@@ -10,6 +10,7 @@ import {
 } from "./controllers/accessController/accessController";
 import {
   GETFileById,
+  POSTGeneratePDF,
   POSTUploadUserDocument,
 } from "./controllers/file/fileController";
 import {
@@ -146,6 +147,7 @@ app.put("/api/access/:id", PUTUpdateData);
 app.delete("/api/access/:id", DELETEAccessData);
 
 app.use(AuthMiddleware);
+app.post("/api/get-pdf", POSTGeneratePDF);
 app.get("/api/user/whoami", GETWhoAmI);
 // STATISTICS
 app.get("/api/statistic/admin/dashboard", GETEmployeeStatistic);

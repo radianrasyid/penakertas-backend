@@ -1,3 +1,4 @@
+import { faker } from "@faker-js/faker";
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
 import jsonwebtoken from "jsonwebtoken";
@@ -181,1620 +182,1630 @@ export const POSTCheckRole = async (req: Request, res: Response) => {
 
 export const POSTBulkInsert = async (req: Request, res: Response) => {
   try {
-    const test1 = await userAccess.create({
-      data: {
-        title: "ROOT",
-        access: {
-          menu: [
-            {
-              name: "Beranda",
-              access: {
-                read: true,
-                add: false,
-                update: false,
-                delete: false,
-                detail: false,
-              },
-            },
-            {
-              name: "Data Master",
-              access: {
-                read: true,
-                add: true,
-                update: true,
-                delete: true,
-                detail: true,
-              },
-              children: [
-                {
-                  name: "Provinsi",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Kabupaten/Kota",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Kecamatan",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Kelurahan",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Agama",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Bagian",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Golongan",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Jabatan",
-                  access: {
-                    read: false,
-                    add: false,
-                    update: false,
-                    delete: false,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Jenis Kelamin",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Jenis Cuti",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Kegiatan Anak",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Kelompok Pekerjaan",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Pekerjaan",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Pendidikan",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Status Anak",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Sumber Gaji",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Status Orang Tua",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Status Pasangan",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Status Perkawinan",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Tunjangan Anak",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Unit Kerja",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-              ],
-            },
-            {
-              name: "Pegawai",
-              access: {
-                read: true,
-                add: true,
-                update: true,
-                delete: true,
-                detail: true,
-              },
-            },
-            {
-              name: "Biodata",
-              access: {
-                read: true,
-                add: false,
-                update: false,
-                delete: false,
-                detail: false,
-              },
-            },
-            {
-              name: "Riwayat Pendidikan",
-              access: {
-                read: true,
-                add: true,
-                update: true,
-                delete: true,
-                detail: true,
-              },
-            },
-            {
-              name: "Riwayat Pernikahan",
-              access: {
-                read: true,
-                add: true,
-                update: true,
-                delete: true,
-                detail: true,
-              },
-            },
-            {
-              name: "Data Anak",
-              access: {
-                read: true,
-                add: true,
-                update: true,
-                delete: true,
-                detail: true,
-              },
-            },
-            {
-              name: "Data Orang Tua",
-              access: {
-                read: true,
-                add: true,
-                update: true,
-                delete: true,
-                detail: true,
-              },
-            },
-            {
-              name: "Cuti",
-              access: {
-                read: true,
-                add: true,
-                update: true,
-                delete: true,
-                detail: true,
-              },
-            },
-            {
-              name: "SK Kerja",
-              access: {
-                read: true,
-                add: true,
-                update: true,
-                delete: true,
-                detail: false,
-              },
-            },
-            {
-              name: "Laporan",
-              access: {
-                read: true,
-                add: false,
-                update: false,
-                delete: false,
-                detail: false,
-              },
-              children: [
-                {
-                  name: "Laporan Pegawai",
-                  access: {
-                    read: true,
-                    add: false,
-                    update: false,
-                    delete: false,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Laporan Pegawai ASN",
-                  access: {
-                    read: false,
-                    add: false,
-                    update: false,
-                    delete: false,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Laporan Pegawai CPNS",
-                  access: {
-                    read: false,
-                    add: false,
-                    update: false,
-                    delete: false,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Laporan Pegawai Honor",
-                  access: {
-                    read: false,
-                    add: false,
-                    update: false,
-                    delete: false,
-                    detail: false,
-                  },
-                },
-              ],
-            },
-            {
-              name: "Akun",
-              access: {
-                read: true,
-                add: false,
-                update: false,
-                delete: false,
-                detail: false,
-              },
-              children: [
-                {
-                  name: "Role",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Akun",
-                  access: {
-                    read: true,
-                    add: false,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Akses",
-                  access: {
-                    read: true,
-                    add: false,
-                    update: true,
-                    delete: false,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Profil",
-                  access: {
-                    read: true,
-                    add: false,
-                    update: false,
-                    delete: false,
-                    detail: false,
-                  },
-                },
-              ],
-            },
-          ],
-        },
-      },
-    });
-    const test2 = await userAccess.create({
-      data: {
-        title: "ADMIN",
-        access: {
-          menu: [
-            {
-              name: "Beranda",
-              access: {
-                read: true,
-                add: false,
-                update: false,
-                delete: false,
-                detail: false,
-              },
-            },
-            {
-              name: "Data Master",
-              access: {
-                read: true,
-                add: false,
-                update: false,
-                delete: false,
-                detail: false,
-              },
-              children: [
-                {
-                  name: "Provinsi",
-                  access: {
-                    read: true,
-                    add: false,
-                    update: false,
-                    delete: false,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Kabupaten/Kota",
-                  access: {
-                    read: true,
-                    add: false,
-                    update: false,
-                    delete: false,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Kecamatan",
-                  access: {
-                    read: true,
-                    add: false,
-                    update: false,
-                    delete: false,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Kelurahan",
-                  access: {
-                    read: true,
-                    add: false,
-                    update: false,
-                    delete: false,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Agama",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Bagian",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Golongan",
-                  access: {
-                    read: true,
-                    add: false,
-                    update: false,
-                    delete: false,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Jabatan",
-                  access: {
-                    read: false,
-                    add: false,
-                    update: false,
-                    delete: false,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Jenis Kelamin",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Jenis Cuti",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Kegiatan Anak",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Kelompok Pekerjaan",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Pekerjaan",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Pendidikan",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Status Anak",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Sumber Gaji",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Status Orang Tua",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Status Pasangan",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Status Perkawinan",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Tunjangan Anak",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Unit Kerja",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-              ],
-            },
-            {
-              name: "Pegawai",
-              access: {
-                read: true,
-                add: true,
-                update: true,
-                delete: false,
-                detail: true,
-              },
-            },
-            {
-              name: "Biodata",
-              access: {
-                read: true,
-                add: false,
-                update: false,
-                delete: false,
-                detail: false,
-              },
-            },
-            {
-              name: "Riwayat Pendidikan",
-              access: {
-                read: true,
-                add: true,
-                update: true,
-                delete: true,
-                detail: true,
-              },
-            },
-            {
-              name: "Riwayat Pernikahan",
-              access: {
-                read: true,
-                add: true,
-                update: true,
-                delete: true,
-                detail: true,
-              },
-            },
-            {
-              name: "Data Anak",
-              access: {
-                read: true,
-                add: true,
-                update: true,
-                delete: true,
-                detail: true,
-              },
-            },
-            {
-              name: "Data Orang Tua",
-              access: {
-                read: true,
-                add: true,
-                update: true,
-                delete: true,
-                detail: true,
-              },
-            },
-            {
-              name: "Cuti",
-              access: {
-                read: true,
-                add: true,
-                update: true,
-                delete: true,
-                detail: true,
-              },
-            },
-            {
-              name: "SK Kerja",
-              access: {
-                read: true,
-                add: true,
-                update: true,
-                delete: true,
-                detail: false,
-              },
-            },
-            {
-              name: "Laporan",
-              access: {
-                read: true,
-                add: false,
-                update: false,
-                delete: false,
-                detail: false,
-              },
-              children: [
-                {
-                  name: "Laporan Pegawai",
-                  access: {
-                    read: true,
-                    add: false,
-                    update: false,
-                    delete: false,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Laporan Pegawai ASN",
-                  access: {
-                    read: false,
-                    add: false,
-                    update: false,
-                    delete: false,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Laporan Pegawai CPNS",
-                  access: {
-                    read: false,
-                    add: false,
-                    update: false,
-                    delete: false,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Laporan Pegawai Honor",
-                  access: {
-                    read: false,
-                    add: false,
-                    update: false,
-                    delete: false,
-                    detail: false,
-                  },
-                },
-              ],
-            },
-            {
-              name: "Akun",
-              access: {
-                read: true,
-                add: false,
-                update: false,
-                delete: false,
-                detail: false,
-              },
-              children: [
-                {
-                  name: "Role",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Akun",
-                  access: {
-                    read: true,
-                    add: false,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Akses",
-                  access: {
-                    read: true,
-                    add: false,
-                    update: true,
-                    delete: false,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Profil",
-                  access: {
-                    read: true,
-                    add: false,
-                    update: false,
-                    delete: false,
-                    detail: false,
-                  },
-                },
-              ],
-            },
-          ],
-        },
-      },
-    });
-    const test3 = await userAccess.create({
-      data: {
-        title: "PEGAWAI",
-        access: {
-          menu: [
-            {
-              name: "Beranda",
-              access: {
-                read: true,
-                add: false,
-                update: false,
-                delete: false,
-                detail: false,
-              },
-            },
-            {
-              name: "Data Master",
-              access: {
-                read: true,
-                add: false,
-                update: false,
-                delete: false,
-                detail: false,
-              },
-              children: [
-                {
-                  name: "Provinsi",
-                  access: {
-                    read: true,
-                    add: false,
-                    update: false,
-                    delete: false,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Kabupaten/Kota",
-                  access: {
-                    read: true,
-                    add: false,
-                    update: false,
-                    delete: false,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Kecamatan",
-                  access: {
-                    read: true,
-                    add: false,
-                    update: false,
-                    delete: false,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Kelurahan",
-                  access: {
-                    read: true,
-                    add: false,
-                    update: false,
-                    delete: false,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Agama",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Bagian",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Golongan",
-                  access: {
-                    read: true,
-                    add: false,
-                    update: false,
-                    delete: false,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Jabatan",
-                  access: {
-                    read: false,
-                    add: false,
-                    update: false,
-                    delete: false,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Jenis Kelamin",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Jenis Cuti",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Kegiatan Anak",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Kelompok Pekerjaan",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Pekerjaan",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Pendidikan",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Status Anak",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Sumber Gaji",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Status Orang Tua",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Status Pasangan",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Status Perkawinan",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Tunjangan Anak",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Unit Kerja",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-              ],
-            },
-            {
-              name: "Pegawai",
-              access: {
-                read: true,
-                add: true,
-                update: true,
-                delete: false,
-                detail: true,
-              },
-            },
-            {
-              name: "Biodata",
-              access: {
-                read: true,
-                add: false,
-                update: false,
-                delete: false,
-                detail: false,
-              },
-            },
-            {
-              name: "Riwayat Pendidikan",
-              access: {
-                read: true,
-                add: true,
-                update: true,
-                delete: true,
-                detail: true,
-              },
-            },
-            {
-              name: "Riwayat Pernikahan",
-              access: {
-                read: true,
-                add: true,
-                update: true,
-                delete: true,
-                detail: true,
-              },
-            },
-            {
-              name: "Data Anak",
-              access: {
-                read: true,
-                add: true,
-                update: true,
-                delete: true,
-                detail: true,
-              },
-            },
-            {
-              name: "Data Orang Tua",
-              access: {
-                read: true,
-                add: true,
-                update: true,
-                delete: true,
-                detail: true,
-              },
-            },
-            {
-              name: "Cuti",
-              access: {
-                read: true,
-                add: true,
-                update: true,
-                delete: true,
-                detail: true,
-              },
-            },
-            {
-              name: "SK Kerja",
-              access: {
-                read: true,
-                add: true,
-                update: true,
-                delete: true,
-                detail: false,
-              },
-            },
-            {
-              name: "Laporan",
-              access: {
-                read: true,
-                add: false,
-                update: false,
-                delete: false,
-                detail: false,
-              },
-              children: [
-                {
-                  name: "Laporan Pegawai",
-                  access: {
-                    read: true,
-                    add: false,
-                    update: false,
-                    delete: false,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Laporan Pegawai ASN",
-                  access: {
-                    read: false,
-                    add: false,
-                    update: false,
-                    delete: false,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Laporan Pegawai CPNS",
-                  access: {
-                    read: false,
-                    add: false,
-                    update: false,
-                    delete: false,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Laporan Pegawai Honor",
-                  access: {
-                    read: false,
-                    add: false,
-                    update: false,
-                    delete: false,
-                    detail: false,
-                  },
-                },
-              ],
-            },
-            {
-              name: "Akun",
-              access: {
-                read: true,
-                add: false,
-                update: false,
-                delete: false,
-                detail: false,
-              },
-              children: [
-                {
-                  name: "Role",
-                  access: {
-                    read: true,
-                    add: true,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Akun",
-                  access: {
-                    read: true,
-                    add: false,
-                    update: true,
-                    delete: true,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Akses",
-                  access: {
-                    read: true,
-                    add: false,
-                    update: true,
-                    delete: false,
-                    detail: false,
-                  },
-                },
-                {
-                  name: "Profil",
-                  access: {
-                    read: true,
-                    add: false,
-                    update: false,
-                    delete: false,
-                    detail: false,
-                  },
-                },
-              ],
-            },
-          ],
-        },
-      },
-    });
+    // await prisma.category.createMany({
+    //   data: [
+    //     {
+    //       name: "Juru Muda",
+    //       additionalName: "Ia",
+    //       value: "Ia / Juru Muda",
+    //     },
+    //     {
+    //       name: "Juru Muda Tk I",
+    //       additionalName: "Ib",
+    //       value: "Ib / Juru Muda Tk I",
+    //     },
+    //     {
+    //       name: "Juru",
+    //       additionalName: "Ic",
+    //       value: "Ic / Juru",
+    //     },
+    //   ],
+    // });
+    // await prisma.leaveType.createMany({
+    //   data: [
+    //     {
+    //       name: "A",
+    //       description: "A",
+    //     },
+    //     {
+    //       name: "B",
+    //       description: "B",
+    //     },
+    //   ],
+    // });
+    // await prisma.childActivity.createMany({
+    //   data: ["Pelajar", "Mahasiswa", "Pekerja", "Belum Sekolah"].map((i) => {
+    //     return {
+    //       name: i,
+    //       value: i.toUpperCase(),
+    //     };
+    //   }),
+    // });
+    // await prisma.profession.createMany({
+    //   data: [
+    //     "Swasta",
+    //     "Pegawai Negeri Sipil",
+    //     "Non ASN (PTT/THL)",
+    //     "Pensiunan",
+    //     "Lainnya",
+    //   ].map((i) => {
+    //     return {
+    //       name: i,
+    //       value: i.toUpperCase(),
+    //     };
+    //   }),
+    // });
+    // await prisma.childStatus.createMany({
+    //   data: ["Anak Kandung", "Anak Sambung"].map((i) => {
+    //     return {
+    //       name: i,
+    //       value: i.toUpperCase(),
+    //     };
+    //   }),
+    // });
+    // await prisma.sourceOfSalary.createMany({
+    //   data: ["APBD", "APBN"].map((i) => {
+    //     return {
+    //       name: i,
+    //       value: i.toUpperCase(),
+    //     };
+    //   }),
+    // });
+    // await prisma.parentStatus.createMany({
+    //   data: ["Hidup", "Meninggal"].map((i) => {
+    //     return {
+    //       name: i,
+    //       value: i.toUpperCase(),
+    //     };
+    //   }),
+    // });
+    // await prisma.partnerStatus.createMany({
+    //   data: ["Suami", "Istri"].map((i) => {
+    //     return {
+    //       name: i,
+    //       value: i.toUpperCase(),
+    //     };
+    //   }),
+    // });
+    // await prisma.childSupport.createMany({
+    //   data: ["Dapat", "Tidak Dapat"].map((i) => {
+    //     return {
+    //       name: i,
+    //       value: i.toUpperCase(),
+    //     };
+    //   }),
+    // });
+    // await prisma.user.createMany({
+    //   data: [
+    //     {
+    //       firstName: "Radian",
+    //       lastName: "Rasyid",
+    //       password: await bcrypt.hash("12345678", 10),
+    //       email: "radian.rasyid@gmail.com",
+    //       username: "radianrasyid",
+    //       role: "ROOT",
+    //     },
+    //     {
+    //       firstName: "Astrid Faradilla",
+    //       lastName: "Pangesti",
+    //       password: await bcrypt.hash("12345678", 10),
+    //       email: "astridfaradilla@gmail.com",
+    //       username: "astridf",
+    //       role: "ADMIN",
+    //     },
+    //     {
+    //       firstName: "Azra",
+    //       lastName: "Ramadhani",
+    //       password: await bcrypt.hash("12345678", 10),
+    //       email: "azraramadhani@gmail.com",
+    //       username: "azraramadhani",
+    //       role: "PEGAWAI",
+    //     },
+    //     {
+    //       firstName: "Ramonzha",
+    //       lastName: "",
+    //       password: await bcrypt.hash("12345678", 10),
+    //       email: "ramonzha@gmail.com",
+    //       username: "ramonzha",
+    //       role: "ROOT",
+    //     },
+    //   ],
+    // });
+    // await prisma.gender.createMany({
+    //   data: [
+    //     {
+    //       name: "MALE",
+    //       value: "MALE",
+    //     },
+    //     {
+    //       name: "FEMALE",
+    //       value: "FEMALE",
+    //     },
+    //   ],
+    // });
+    // await prisma.religion.createMany({
+    //   data: [
+    //     {
+    //       name: "Islam",
+    //       value: "ISLAM",
+    //     },
+    //     {
+    //       name: "Kristen",
+    //       value: "KRISTEN",
+    //     },
+    //     {
+    //       name: "Katolik",
+    //       value: "KATOLIK",
+    //     },
+    //     {
+    //       name: "Hindu",
+    //       value: "HINDU",
+    //     },
+    //     {
+    //       name: "Buddha",
+    //       value: "BUDDHA",
+    //     },
+    //     {
+    //       name: "Khonghucu",
+    //       value: "KHONGHUCU",
+    //     },
+    //   ],
+    // });
+    // await prisma.educationLevel.createMany({
+    //   data: [
+    //     {
+    //       name: "S1",
+    //       value: "S1",
+    //     },
+    //     {
+    //       name: "SMA",
+    //       value: "SMA",
+    //     },
+    //     {
+    //       name: "SMP",
+    //       value: "SM",
+    //     },
+    //   ],
+    // });
+    // await prisma.maritalStatus.createMany({
+    //   data: [
+    //     {
+    //       name: "Belum Kawin",
+    //       value: "BELUM KAWIN",
+    //     },
+    //     {
+    //       name: "Kawin",
+    //       value: "KAWIN",
+    //     },
+    //     {
+    //       name: "Cerai Hidup",
+    //       value: "CERAI HIDUP",
+    //     },
+    //     {
+    //       name: "Cerai Mati",
+    //       value: "CERAII MATI",
+    //     },
+    //     {
+    //       name: "Nikah Tercatat/Siri",
+    //       value: "NIKAH SIRI",
+    //     },
+    //   ],
+    // });
+    // await prisma.workGroup.createMany({
+    //   data: [
+    //     {
+    //       name: "ASN",
+    //       value: "ASN",
+    //     },
+    //     {
+    //       name: "PTT",
+    //       value: "PTT",
+    //     },
+    //     {
+    //       name: "THL",
+    //       value: "THL",
+    //     },
+    //   ],
+    // });
+    // await prisma.workUnit.createMany({
+    //   data: [
+    //     "Biro Pemerintahan dan Otonomi Daerah",
+    //     "Biro Kesejahteraan Rakyat",
+    //     "Biro Hukum",
+    //     "Biro Perekonomian dan Pembangunan",
+    //     "Biro Pengadaan Barang dan Jasa",
+    //     "Biro Organisasi",
+    //     "Biro Umum",
+    //     "Biro Administrasi Pimpinan",
+    //   ].map((i) => {
+    //     return {
+    //       name: i,
+    //       value: i.toUpperCase(),
+    //     };
+    //   }),
+    // });
+    // await prisma.workPart.createMany({
+    //   data: [
+    //     "Bagian Kerjasama",
+    //     "Sub Bagian Tata Usaha",
+    //     "Bagian Peraturan Perundang-Undangan Provinsi",
+    //     "Bagian Peraturan Perundang-Undangan Kabupaten/Kota",
+    //     "Bagian Bantuan Hukum",
+    //     "Bagian Pengelolaan Pengadaan Barang dan Jasa",
+    //     "Bagian Pengelolaan Layanan Pengadaan Secara Elektronik",
+    //     "Bagian Pembinaan dan Advokasi Pengadaan Barang dan Jasa",
+    //     "Bagian Kelembagaan dan Analisis Jabatan",
+    //     "Bagian Reformasi Birokrasi dan Akuntabilitas Kinerja",
+    //     "Bagian Tatalaksana",
+    //     "Bagian Rumah Tangga",
+    //     "Bagian Administrasi Keuangan dan Aset",
+    //     "Bagian Tata Usaha",
+    //     "Sub Bagian Tata Usaha Pimpinan dan Staf Ahli",
+    //     "Bagian Perencanaan dan Kepegawaian Setda",
+    //     "Bagian Materi dan Komunikasi Pimpinan",
+    //     "Bagian Protokol",
+    //     "Sub Bagian Pembinaan Kelembagaan Pengadaan Badang dan Jasa",
+    //   ].map((e) => {
+    //     return {
+    //       name: e,
+    //       value: e.toUpperCase(),
+    //     };
+    //   }),
+    // });
+    // await prisma.province.createMany({
+    //   data: [
+    //     "Nanggroe Aceh Darussalam",
+    //     "Sumatera Utara",
+    //     "Sumatera Selatan",
+    //     "Sumatera Barat",
+    //     "Bengkulu",
+    //     "Riau",
+    //     "Kepulauan Riau",
+    //     "Jambi",
+    //     "Lampung",
+    //     "Bangka Belitung",
+    //     "Kalimantan Barat",
+    //     "Kalimantan Timur",
+    //     "Kalimantan Selatan",
+    //     "Kalimantan Tengah",
+    //     "Kalimantan Utara",
+    //     "Banten",
+    //     "DKI Jakarta",
+    //     "Jawa Barat",
+    //     "Jawa Tengah",
+    //     "Daerah Istimewa Yogyakarta",
+    //     "Jawa Timur",
+    //     "Bali",
+    //     "Nusa Tenggara Timur",
+    //     "Nusa Tenggara Barat",
+    //     "Gorontalo",
+    //     "Sulawesi Barat",
+    //     "Sulawesi Tengah",
+    //     "Sulawesi Utara",
+    //     "Sulawesi Tenggara",
+    //     "Sulawesi Selatan",
+    //     "Maluku Utara",
+    //     "Maluku",
+    //     "Papua Barat",
+    //     "Papua",
+    //     "Papua Tengah",
+    //     "Papua Pegunungan",
+    //     "Papua Selatan",
+    //     "Papua Barat Daya",
+    //   ].map((i) => {
+    //     return {
+    //       name: i,
+    //       value: i,
+    //     };
+    //   }),
+    // });
+    // const test1 = await userAccess.create({
+    //   data: {
+    //     title: "ROOT",
+    //     access: {
+    //       menu: [
+    //         {
+    //           name: "Beranda",
+    //           access: {
+    //             read: true,
+    //             add: false,
+    //             update: false,
+    //             delete: false,
+    //             detail: false,
+    //           },
+    //         },
+    //         {
+    //           name: "Data Master",
+    //           access: {
+    //             read: true,
+    //             add: true,
+    //             update: true,
+    //             delete: true,
+    //             detail: true,
+    //           },
+    //           children: [
+    //             {
+    //               name: "Provinsi",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Kabupaten/Kota",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Kecamatan",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Kelurahan",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Agama",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Bagian",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Golongan",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Jabatan",
+    //               access: {
+    //                 read: false,
+    //                 add: false,
+    //                 update: false,
+    //                 delete: false,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Jenis Kelamin",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Jenis Cuti",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Kegiatan Anak",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Kelompok Pekerjaan",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Pekerjaan",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Pendidikan",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Status Anak",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Sumber Gaji",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Status Orang Tua",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Status Pasangan",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Status Perkawinan",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Tunjangan Anak",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Unit Kerja",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //           ],
+    //         },
+    //         {
+    //           name: "Pegawai",
+    //           access: {
+    //             read: true,
+    //             add: true,
+    //             update: true,
+    //             delete: true,
+    //             detail: true,
+    //           },
+    //         },
+    //         {
+    //           name: "Biodata",
+    //           access: {
+    //             read: true,
+    //             add: false,
+    //             update: false,
+    //             delete: false,
+    //             detail: false,
+    //           },
+    //         },
+    //         {
+    //           name: "Riwayat Pendidikan",
+    //           access: {
+    //             read: true,
+    //             add: true,
+    //             update: true,
+    //             delete: true,
+    //             detail: true,
+    //           },
+    //         },
+    //         {
+    //           name: "Riwayat Pernikahan",
+    //           access: {
+    //             read: true,
+    //             add: true,
+    //             update: true,
+    //             delete: true,
+    //             detail: true,
+    //           },
+    //         },
+    //         {
+    //           name: "Data Anak",
+    //           access: {
+    //             read: true,
+    //             add: true,
+    //             update: true,
+    //             delete: true,
+    //             detail: true,
+    //           },
+    //         },
+    //         {
+    //           name: "Data Orang Tua",
+    //           access: {
+    //             read: true,
+    //             add: true,
+    //             update: true,
+    //             delete: true,
+    //             detail: true,
+    //           },
+    //         },
+    //         {
+    //           name: "Cuti",
+    //           access: {
+    //             read: true,
+    //             add: true,
+    //             update: true,
+    //             delete: true,
+    //             detail: true,
+    //           },
+    //         },
+    //         {
+    //           name: "SK Kerja",
+    //           access: {
+    //             read: true,
+    //             add: true,
+    //             update: true,
+    //             delete: true,
+    //             detail: false,
+    //           },
+    //         },
+    //         {
+    //           name: "Laporan",
+    //           access: {
+    //             read: true,
+    //             add: false,
+    //             update: false,
+    //             delete: false,
+    //             detail: false,
+    //           },
+    //           children: [
+    //             {
+    //               name: "Laporan Pegawai",
+    //               access: {
+    //                 read: true,
+    //                 add: false,
+    //                 update: false,
+    //                 delete: false,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Laporan Pegawai ASN",
+    //               access: {
+    //                 read: false,
+    //                 add: false,
+    //                 update: false,
+    //                 delete: false,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Laporan Pegawai CPNS",
+    //               access: {
+    //                 read: false,
+    //                 add: false,
+    //                 update: false,
+    //                 delete: false,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Laporan Pegawai Honor",
+    //               access: {
+    //                 read: false,
+    //                 add: false,
+    //                 update: false,
+    //                 delete: false,
+    //                 detail: false,
+    //               },
+    //             },
+    //           ],
+    //         },
+    //         {
+    //           name: "Akun",
+    //           access: {
+    //             read: true,
+    //             add: false,
+    //             update: false,
+    //             delete: false,
+    //             detail: false,
+    //           },
+    //           children: [
+    //             {
+    //               name: "Role",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Akun",
+    //               access: {
+    //                 read: true,
+    //                 add: false,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Akses",
+    //               access: {
+    //                 read: true,
+    //                 add: false,
+    //                 update: true,
+    //                 delete: false,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Profil",
+    //               access: {
+    //                 read: true,
+    //                 add: false,
+    //                 update: false,
+    //                 delete: false,
+    //                 detail: false,
+    //               },
+    //             },
+    //           ],
+    //         },
+    //       ],
+    //     },
+    //   },
+    // });
+    // const test2 = await userAccess.create({
+    //   data: {
+    //     title: "ADMIN",
+    //     access: {
+    //       menu: [
+    //         {
+    //           name: "Beranda",
+    //           access: {
+    //             read: true,
+    //             add: false,
+    //             update: false,
+    //             delete: false,
+    //             detail: false,
+    //           },
+    //         },
+    //         {
+    //           name: "Data Master",
+    //           access: {
+    //             read: true,
+    //             add: false,
+    //             update: false,
+    //             delete: false,
+    //             detail: false,
+    //           },
+    //           children: [
+    //             {
+    //               name: "Provinsi",
+    //               access: {
+    //                 read: true,
+    //                 add: false,
+    //                 update: false,
+    //                 delete: false,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Kabupaten/Kota",
+    //               access: {
+    //                 read: true,
+    //                 add: false,
+    //                 update: false,
+    //                 delete: false,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Kecamatan",
+    //               access: {
+    //                 read: true,
+    //                 add: false,
+    //                 update: false,
+    //                 delete: false,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Kelurahan",
+    //               access: {
+    //                 read: true,
+    //                 add: false,
+    //                 update: false,
+    //                 delete: false,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Agama",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Bagian",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Golongan",
+    //               access: {
+    //                 read: true,
+    //                 add: false,
+    //                 update: false,
+    //                 delete: false,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Jabatan",
+    //               access: {
+    //                 read: false,
+    //                 add: false,
+    //                 update: false,
+    //                 delete: false,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Jenis Kelamin",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Jenis Cuti",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Kegiatan Anak",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Kelompok Pekerjaan",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Pekerjaan",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Pendidikan",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Status Anak",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Sumber Gaji",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Status Orang Tua",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Status Pasangan",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Status Perkawinan",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Tunjangan Anak",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Unit Kerja",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //           ],
+    //         },
+    //         {
+    //           name: "Pegawai",
+    //           access: {
+    //             read: true,
+    //             add: true,
+    //             update: true,
+    //             delete: false,
+    //             detail: true,
+    //           },
+    //         },
+    //         {
+    //           name: "Biodata",
+    //           access: {
+    //             read: true,
+    //             add: false,
+    //             update: false,
+    //             delete: false,
+    //             detail: false,
+    //           },
+    //         },
+    //         {
+    //           name: "Riwayat Pendidikan",
+    //           access: {
+    //             read: true,
+    //             add: true,
+    //             update: true,
+    //             delete: true,
+    //             detail: true,
+    //           },
+    //         },
+    //         {
+    //           name: "Riwayat Pernikahan",
+    //           access: {
+    //             read: true,
+    //             add: true,
+    //             update: true,
+    //             delete: true,
+    //             detail: true,
+    //           },
+    //         },
+    //         {
+    //           name: "Data Anak",
+    //           access: {
+    //             read: true,
+    //             add: true,
+    //             update: true,
+    //             delete: true,
+    //             detail: true,
+    //           },
+    //         },
+    //         {
+    //           name: "Data Orang Tua",
+    //           access: {
+    //             read: true,
+    //             add: true,
+    //             update: true,
+    //             delete: true,
+    //             detail: true,
+    //           },
+    //         },
+    //         {
+    //           name: "Cuti",
+    //           access: {
+    //             read: true,
+    //             add: true,
+    //             update: true,
+    //             delete: true,
+    //             detail: true,
+    //           },
+    //         },
+    //         {
+    //           name: "SK Kerja",
+    //           access: {
+    //             read: true,
+    //             add: true,
+    //             update: true,
+    //             delete: true,
+    //             detail: false,
+    //           },
+    //         },
+    //         {
+    //           name: "Laporan",
+    //           access: {
+    //             read: true,
+    //             add: false,
+    //             update: false,
+    //             delete: false,
+    //             detail: false,
+    //           },
+    //           children: [
+    //             {
+    //               name: "Laporan Pegawai",
+    //               access: {
+    //                 read: true,
+    //                 add: false,
+    //                 update: false,
+    //                 delete: false,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Laporan Pegawai ASN",
+    //               access: {
+    //                 read: false,
+    //                 add: false,
+    //                 update: false,
+    //                 delete: false,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Laporan Pegawai CPNS",
+    //               access: {
+    //                 read: false,
+    //                 add: false,
+    //                 update: false,
+    //                 delete: false,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Laporan Pegawai Honor",
+    //               access: {
+    //                 read: false,
+    //                 add: false,
+    //                 update: false,
+    //                 delete: false,
+    //                 detail: false,
+    //               },
+    //             },
+    //           ],
+    //         },
+    //         {
+    //           name: "Akun",
+    //           access: {
+    //             read: true,
+    //             add: false,
+    //             update: false,
+    //             delete: false,
+    //             detail: false,
+    //           },
+    //           children: [
+    //             {
+    //               name: "Role",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Akun",
+    //               access: {
+    //                 read: true,
+    //                 add: false,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Akses",
+    //               access: {
+    //                 read: true,
+    //                 add: false,
+    //                 update: true,
+    //                 delete: false,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Profil",
+    //               access: {
+    //                 read: true,
+    //                 add: false,
+    //                 update: false,
+    //                 delete: false,
+    //                 detail: false,
+    //               },
+    //             },
+    //           ],
+    //         },
+    //       ],
+    //     },
+    //   },
+    // });
+    // const test3 = await userAccess.create({
+    //   data: {
+    //     title: "PEGAWAI",
+    //     access: {
+    //       menu: [
+    //         {
+    //           name: "Beranda",
+    //           access: {
+    //             read: true,
+    //             add: false,
+    //             update: false,
+    //             delete: false,
+    //             detail: false,
+    //           },
+    //         },
+    //         {
+    //           name: "Data Master",
+    //           access: {
+    //             read: true,
+    //             add: false,
+    //             update: false,
+    //             delete: false,
+    //             detail: false,
+    //           },
+    //           children: [
+    //             {
+    //               name: "Provinsi",
+    //               access: {
+    //                 read: true,
+    //                 add: false,
+    //                 update: false,
+    //                 delete: false,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Kabupaten/Kota",
+    //               access: {
+    //                 read: true,
+    //                 add: false,
+    //                 update: false,
+    //                 delete: false,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Kecamatan",
+    //               access: {
+    //                 read: true,
+    //                 add: false,
+    //                 update: false,
+    //                 delete: false,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Kelurahan",
+    //               access: {
+    //                 read: true,
+    //                 add: false,
+    //                 update: false,
+    //                 delete: false,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Agama",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Bagian",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Golongan",
+    //               access: {
+    //                 read: true,
+    //                 add: false,
+    //                 update: false,
+    //                 delete: false,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Jabatan",
+    //               access: {
+    //                 read: false,
+    //                 add: false,
+    //                 update: false,
+    //                 delete: false,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Jenis Kelamin",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Jenis Cuti",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Kegiatan Anak",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Kelompok Pekerjaan",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Pekerjaan",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Pendidikan",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Status Anak",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Sumber Gaji",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Status Orang Tua",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Status Pasangan",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Status Perkawinan",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Tunjangan Anak",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Unit Kerja",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //           ],
+    //         },
+    //         {
+    //           name: "Pegawai",
+    //           access: {
+    //             read: true,
+    //             add: true,
+    //             update: true,
+    //             delete: false,
+    //             detail: true,
+    //           },
+    //         },
+    //         {
+    //           name: "Biodata",
+    //           access: {
+    //             read: true,
+    //             add: false,
+    //             update: false,
+    //             delete: false,
+    //             detail: false,
+    //           },
+    //         },
+    //         {
+    //           name: "Riwayat Pendidikan",
+    //           access: {
+    //             read: true,
+    //             add: true,
+    //             update: true,
+    //             delete: true,
+    //             detail: true,
+    //           },
+    //         },
+    //         {
+    //           name: "Riwayat Pernikahan",
+    //           access: {
+    //             read: true,
+    //             add: true,
+    //             update: true,
+    //             delete: true,
+    //             detail: true,
+    //           },
+    //         },
+    //         {
+    //           name: "Data Anak",
+    //           access: {
+    //             read: true,
+    //             add: true,
+    //             update: true,
+    //             delete: true,
+    //             detail: true,
+    //           },
+    //         },
+    //         {
+    //           name: "Data Orang Tua",
+    //           access: {
+    //             read: true,
+    //             add: true,
+    //             update: true,
+    //             delete: true,
+    //             detail: true,
+    //           },
+    //         },
+    //         {
+    //           name: "Cuti",
+    //           access: {
+    //             read: true,
+    //             add: true,
+    //             update: true,
+    //             delete: true,
+    //             detail: true,
+    //           },
+    //         },
+    //         {
+    //           name: "SK Kerja",
+    //           access: {
+    //             read: true,
+    //             add: true,
+    //             update: true,
+    //             delete: true,
+    //             detail: false,
+    //           },
+    //         },
+    //         {
+    //           name: "Laporan",
+    //           access: {
+    //             read: true,
+    //             add: false,
+    //             update: false,
+    //             delete: false,
+    //             detail: false,
+    //           },
+    //           children: [
+    //             {
+    //               name: "Laporan Pegawai",
+    //               access: {
+    //                 read: true,
+    //                 add: false,
+    //                 update: false,
+    //                 delete: false,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Laporan Pegawai ASN",
+    //               access: {
+    //                 read: false,
+    //                 add: false,
+    //                 update: false,
+    //                 delete: false,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Laporan Pegawai CPNS",
+    //               access: {
+    //                 read: false,
+    //                 add: false,
+    //                 update: false,
+    //                 delete: false,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Laporan Pegawai Honor",
+    //               access: {
+    //                 read: false,
+    //                 add: false,
+    //                 update: false,
+    //                 delete: false,
+    //                 detail: false,
+    //               },
+    //             },
+    //           ],
+    //         },
+    //         {
+    //           name: "Akun",
+    //           access: {
+    //             read: true,
+    //             add: false,
+    //             update: false,
+    //             delete: false,
+    //             detail: false,
+    //           },
+    //           children: [
+    //             {
+    //               name: "Role",
+    //               access: {
+    //                 read: true,
+    //                 add: true,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Akun",
+    //               access: {
+    //                 read: true,
+    //                 add: false,
+    //                 update: true,
+    //                 delete: true,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Akses",
+    //               access: {
+    //                 read: true,
+    //                 add: false,
+    //                 update: true,
+    //                 delete: false,
+    //                 detail: false,
+    //               },
+    //             },
+    //             {
+    //               name: "Profil",
+    //               access: {
+    //                 read: true,
+    //                 add: false,
+    //                 update: false,
+    //                 delete: false,
+    //                 detail: false,
+    //               },
+    //             },
+    //           ],
+    //         },
+    //       ],
+    //     },
+    //   },
+    // });
+    // console.log("TEST BRO", {
+    //   test1,
+    //   test2,
+    //   test3,
+    // });
+    function createRandomUser() {
+      return {
+        email: faker.internet.email(),
+        username: faker.internet.userName(),
+        employmentId: faker.phone.number(),
+        password: faker.internet.password(),
+        firstName: faker.person.firstName(),
+        lastName: faker.person.lastName(),
+        frontTitle: faker.person.prefix(),
+        backTitle: faker.person.suffix(),
+        workGroup: "ASN",
+        workUnit: "Biro Pemerintahan dan Otonomi Daerah",
+        role: "PEGAWAI" as "PEGAWAI",
+        // Add other fields as needed
+      };
+    }
 
-    await prisma.category.createMany({
-      data: [
-        {
-          name: "Juru Muda",
-          additionalName: "Ia",
-          value: "Ia / Juru Muda",
-        },
-        {
-          name: "Juru Muda Tk I",
-          additionalName: "Ib",
-          value: "Ib / Juru Muda Tk I",
-        },
-        {
-          name: "Juru",
-          additionalName: "Ic",
-          value: "Ic / Juru",
-        },
-      ],
-    });
-    await prisma.leaveType.createMany({
-      data: [
-        {
-          name: "A",
-          description: "A",
-        },
-        {
-          name: "B",
-          description: "B",
-        },
-      ],
-    });
-    await prisma.childActivity.createMany({
-      data: ["Pelajar", "Mahasiswa", "Pekerja", "Belum Sekolah"].map((i) => {
-        return {
-          name: i,
-          value: i.toUpperCase(),
-        };
-      }),
-    });
-    await prisma.profession.createMany({
-      data: [
-        "Swasta",
-        "Pegawai Negeri Sipil",
-        "Non ASN (PTT/THL)",
-        "Pensiunan",
-        "Lainnya",
-      ].map((i) => {
-        return {
-          name: i,
-          value: i.toUpperCase(),
-        };
-      }),
-    });
-    await prisma.childStatus.createMany({
-      data: ["Anak Kandung", "Anak Sambung"].map((i) => {
-        return {
-          name: i,
-          value: i.toUpperCase(),
-        };
-      }),
-    });
-    await prisma.sourceOfSalary.createMany({
-      data: ["APBD", "APBN"].map((i) => {
-        return {
-          name: i,
-          value: i.toUpperCase(),
-        };
-      }),
-    });
-    await prisma.parentStatus.createMany({
-      data: ["Hidup", "Meninggal"].map((i) => {
-        return {
-          name: i,
-          value: i.toUpperCase(),
-        };
-      }),
-    });
-    await prisma.partnerStatus.createMany({
-      data: ["Suami", "Istri"].map((i) => {
-        return {
-          name: i,
-          value: i.toUpperCase(),
-        };
-      }),
-    });
-    await prisma.childSupport.createMany({
-      data: ["Dapat", "Tidak Dapat"].map((i) => {
-        return {
-          name: i,
-          value: i.toUpperCase(),
-        };
-      }),
+    const USER = faker.helpers.multiple(createRandomUser, {
+      count: 1000,
     });
     await prisma.user.createMany({
-      data: [
-        {
-          firstName: "Radian",
-          lastName: "Rasyid",
-          password: await bcrypt.hash("12345678", 10),
-          email: "radian.rasyid@gmail.com",
-          username: "radianrasyid",
-          role: "ROOT",
-        },
-        {
-          firstName: "Astrid Faradilla",
-          lastName: "Pangesti",
-          password: await bcrypt.hash("12345678", 10),
-          email: "astridfaradilla@gmail.com",
-          username: "astridf",
-          role: "ADMIN",
-        },
-        {
-          firstName: "Azra",
-          lastName: "Ramadhani",
-          password: await bcrypt.hash("12345678", 10),
-          email: "azraramadhani@gmail.com",
-          username: "azraramadhani",
-          role: "PEGAWAI",
-        },
-        {
-          firstName: "Ramonzha",
-          lastName: "",
-          password: await bcrypt.hash("12345678", 10),
-          email: "ramonzha@gmail.com",
-          username: "ramonzha",
-          role: "ROOT",
-        },
-      ],
-    });
-
-    await prisma.gender.createMany({
-      data: [
-        {
-          name: "MALE",
-          value: "MALE",
-        },
-        {
-          name: "FEMALE",
-          value: "FEMALE",
-        },
-      ],
-    });
-
-    await prisma.religion.createMany({
-      data: [
-        {
-          name: "Islam",
-          value: "ISLAM",
-        },
-        {
-          name: "Kristen",
-          value: "KRISTEN",
-        },
-        {
-          name: "Katolik",
-          value: "KATOLIK",
-        },
-        {
-          name: "Hindu",
-          value: "HINDU",
-        },
-        {
-          name: "Buddha",
-          value: "BUDDHA",
-        },
-        {
-          name: "Khonghucu",
-          value: "KHONGHUCU",
-        },
-      ],
-    });
-
-    await prisma.educationLevel.createMany({
-      data: [
-        {
-          name: "S1",
-          value: "S1",
-        },
-        {
-          name: "SMA",
-          value: "SMA",
-        },
-        {
-          name: "SMP",
-          value: "SM",
-        },
-      ],
-    });
-
-    await prisma.maritalStatus.createMany({
-      data: [
-        {
-          name: "Belum Kawin",
-          value: "BELUM KAWIN",
-        },
-        {
-          name: "Kawin",
-          value: "KAWIN",
-        },
-        {
-          name: "Cerai Hidup",
-          value: "CERAI HIDUP",
-        },
-        {
-          name: "Cerai Mati",
-          value: "CERAII MATI",
-        },
-        {
-          name: "Nikah Tercatat/Siri",
-          value: "NIKAH SIRI",
-        },
-      ],
-    });
-
-    await prisma.workGroup.createMany({
-      data: [
-        {
-          name: "ASN",
-          value: "ASN",
-        },
-        {
-          name: "PTT",
-          value: "PTT",
-        },
-        {
-          name: "THL",
-          value: "THL",
-        },
-      ],
-    });
-
-    await prisma.workUnit.createMany({
-      data: [
-        "Biro Pemerintahan dan Otonomi Daerah",
-        "Biro Kesejahteraan Rakyat",
-        "Biro Hukum",
-        "Biro Perekonomian dan Pembangunan",
-        "Biro Pengadaan Barang dan Jasa",
-        "Biro Organisasi",
-        "Biro Umum",
-        "Biro Administrasi Pimpinan",
-      ].map((i) => {
-        return {
-          name: i,
-          value: i.toUpperCase(),
-        };
-      }),
-    });
-
-    await prisma.workPart.createMany({
-      data: [
-        "Bagian Kerjasama",
-        "Sub Bagian Tata Usaha",
-        "Bagian Peraturan Perundang-Undangan Provinsi",
-        "Bagian Peraturan Perundang-Undangan Kabupaten/Kota",
-        "Bagian Bantuan Hukum",
-        "Bagian Pengelolaan Pengadaan Barang dan Jasa",
-        "Bagian Pengelolaan Layanan Pengadaan Secara Elektronik",
-        "Bagian Pembinaan dan Advokasi Pengadaan Barang dan Jasa",
-        "Bagian Kelembagaan dan Analisis Jabatan",
-        "Bagian Reformasi Birokrasi dan Akuntabilitas Kinerja",
-        "Bagian Tatalaksana",
-        "Bagian Rumah Tangga",
-        "Bagian Administrasi Keuangan dan Aset",
-        "Bagian Tata Usaha",
-        "Sub Bagian Tata Usaha Pimpinan dan Staf Ahli",
-        "Bagian Perencanaan dan Kepegawaian Setda",
-        "Bagian Materi dan Komunikasi Pimpinan",
-        "Bagian Protokol",
-        "Sub Bagian Pembinaan Kelembagaan Pengadaan Badang dan Jasa",
-      ].map((e) => {
-        return {
-          name: e,
-          value: e.toUpperCase(),
-        };
-      }),
-    });
-
-    await prisma.province.createMany({
-      data: [
-        "Nanggroe Aceh Darussalam",
-        "Sumatera Utara",
-        "Sumatera Selatan",
-        "Sumatera Barat",
-        "Bengkulu",
-        "Riau",
-        "Kepulauan Riau",
-        "Jambi",
-        "Lampung",
-        "Bangka Belitung",
-        "Kalimantan Barat",
-        "Kalimantan Timur",
-        "Kalimantan Selatan",
-        "Kalimantan Tengah",
-        "Kalimantan Utara",
-        "Banten",
-        "DKI Jakarta",
-        "Jawa Barat",
-        "Jawa Tengah",
-        "Daerah Istimewa Yogyakarta",
-        "Jawa Timur",
-        "Bali",
-        "Nusa Tenggara Timur",
-        "Nusa Tenggara Barat",
-        "Gorontalo",
-        "Sulawesi Barat",
-        "Sulawesi Tengah",
-        "Sulawesi Utara",
-        "Sulawesi Tenggara",
-        "Sulawesi Selatan",
-        "Maluku Utara",
-        "Maluku",
-        "Papua Barat",
-        "Papua",
-        "Papua Tengah",
-        "Papua Pegunungan",
-        "Papua Selatan",
-        "Papua Barat Daya",
-      ].map((i) => {
-        return {
-          name: i,
-          value: i,
-        };
-      }),
-    });
-    console.log("TEST BRO", {
-      test1,
-      test2,
-      test3,
+      data: USER,
     });
     return res.status(200).json({
       status: "success",
       message: "successfully inserted",
-      data: {
-        test1,
-        test2,
-        test3,
-      },
+      data: USER,
     });
   } catch (error) {
     console.log(error);
@@ -1901,7 +1912,11 @@ export const GETWhoAmI = async (req: Request, res: Response) => {
         createdAt: true,
         updatedAt: true,
         leaves: true,
-        childs: true,
+        childs: {
+          orderBy: {
+            childOrder: "desc",
+          },
+        },
         relationships: true,
         identity: true,
         photograph: true,
@@ -1932,6 +1947,12 @@ export const GETWhoAmI = async (req: Request, res: Response) => {
         telephone: true,
         decisionLetter: true,
         bpjsOfEmployment: true,
+        educations: {
+          orderBy: {
+            graduationYear: "desc",
+          },
+        },
+        parents: true,
         bpjsOfHealth: true,
         role: true,
       },

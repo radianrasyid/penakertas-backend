@@ -1,4 +1,6 @@
+import dayjs from "dayjs";
 import { Request, Response } from "express";
+import puppeteer from "puppeteer";
 import {
   ExampleDocument,
   default as ExampleModel,
@@ -7,6 +9,7 @@ import {
 import prisma from "../../../prisma/prisma";
 import { createChecksum } from "../../lib/processors";
 import { Data, reqFiles } from "../../lib/types/general";
+import { finalize } from "./createTable";
 
 export const GETFileById = async (req: Request, res: Response) => {
   const fileId = req.params.fileId;
@@ -89,4 +92,74 @@ export const POSTUploadUserDocument = async (req: Request, res: Response) => {
     status: "failed",
     message: "no file found!",
   });
+};
+
+export const POSTGeneratePDF = async (req: Request, res: Response) => {
+  const { workGroup, workUnit } = req.body;
+  console.log("ini req body pdf", req.body);
+  const users = await prisma.user.findMany({
+    where: {
+      role: "PEGAWAI",
+      workGroup: {
+        equals: workGroup,
+        mode: "insensitive",
+      },
+      workUnit: {
+        equals: workUnit,
+        mode: "insensitive",
+      },
+    },
+  });
+
+  if (users.length == 0) {
+    return res.status(400).json({
+      status: "failed",
+      message: "no data",
+    });
+  }
+  const dataToAdd = users.map((i, index) => {
+    return {
+      no: index + 1,
+      fullname: `${i.firstName} ${i.lastName}`,
+      birth: `${i.birthPlace}, ${dayjs(i.dateOfBirth).format("DD MMMM YYYY")}`,
+      religion: i.religion,
+      address: i.homeAddress,
+      gender: i.gender === "MALE" ? "Laki-laki" : "Perempuan",
+      workUnit: i.workUnit,
+      status: i.workGroup,
+      education: i.latestEducationLevel,
+      marital: i.maritalStatus,
+      jobDescription: i.jobDescription,
+      placementLocation: i.placementLocation,
+      startingYear: "2017",
+      gapStarting: "18",
+      decisionLetterNumber: i.decisionLetterNumber,
+      familyCertificateNumber: i.familyCertificateNumber,
+      identityNumber: i.identityNumber,
+      bpjsOfHealth: i.bpjsOfHealth,
+      bpjsOfEmployment: i.bpjsOfEmployment,
+      npwpNumber: i.npwpNumber,
+      phoneNumber: i.phoneNumber,
+    };
+  });
+  res.setHeader("Content-Type", "application/pdf");
+  res.setHeader("Content-Disposition", `inline; filename="lib.pdf"`);
+  res.setHeader("Cache-Control", "public, max-age=0"); // Optional: Disable caching
+  try {
+    const test = await finalize(dataToAdd);
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    await page.setContent(test?.html as any);
+    await page.emulateMediaType("screen");
+    const pdf = await page.pdf({
+      path: "result.pdf",
+      printBackground: true,
+      format: "A4",
+      scale: 0.5,
+      landscape: true,
+    });
+    console.log("ini pdf", pdf);
+    await browser.close();
+    res.end(pdf);
+  } catch (error) {}
 };
